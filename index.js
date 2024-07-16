@@ -1,9 +1,25 @@
 import { html, render } from "lit-html";
 import Split from "split.js";
+import { drawBitmap, drawDrawdown, drawWarp, drawWeft } from "./drawing";
 
 let GLOBAL_STATE = {
   cellSize: 20,
   draft: {
+    warpColorSequence: [
+      "red",
+      "red",
+      "red",
+      "red",
+      "red",
+      "red",
+      "blue",
+      "blue",
+      "blue",
+      "blue",
+      "blue",
+      "blue",
+    ],
+    weftColorSequence: ["green", "green", "yellow", "yellow"],
     threading: [
       [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1],
       [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0],
@@ -30,72 +46,51 @@ function view() {
     <div class="page-content">
       <div id="drafting-pane">
         <div class="draft-layout">
-          <div class="warp-color"></div>
+          <div class="warp-color-container">
+            <canvas id="warp-color"></canvas>
+          </div>
           <div></div>
           <div></div>
-          <div class="threading"><canvas id="threading-canvas"></canvas></div>
-          <div class="tie-up"><canvas id="tie-up-canvas"></canvas></div>
+          <div class="threading-container">
+            <canvas id="threading"></canvas>
+          </div>
+          <div class="tie-up"><canvas id="tie-up"></canvas></div>
           <div></div>
-          <div class="draft">draft</div>
-          <div class="treadling"><canvas id="treadling-canvas"></canvas></div>
-          <div class="weft-color"></div>
+          <div class="drawdown-container">
+            <canvas id="drawdown"></canvas>
+          </div>
+          <div class="treadling-container">
+            <canvas id="treadling"></canvas>
+          </div>
+          <div class="weft-color">
+            <canvas id="weft-color"></canvas>
+          </div>
         </div>
       </div>
       <div id="sim-pane"></div>
     </div>`;
 }
 
-function drawBitmap(canvas, arrayData) {
-  const ctx = canvas.getContext("2d");
-  const { cellSize } = GLOBAL_STATE;
-
-  const height = arrayData.length;
-  const width = arrayData[0].length;
-
-  canvas.height = height * cellSize;
-  canvas.width = width * cellSize;
-
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      let val = arrayData[y][x];
-      if (val === 0) {
-        ctx.fillStyle = "white";
-      } else {
-        ctx.fillStyle = "black";
-      }
-
-      ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
-    }
-  }
-
-  ctx.lineStyle = "black";
-  ctx.lineWidth = 1;
-
-  ctx.beginPath();
-
-  for (let y = 0; y < height; y++) {
-    const yVal = y * cellSize - 0.5;
-    ctx.moveTo(0, yVal);
-    ctx.lineTo(width * cellSize, yVal);
-  }
-
-  for (let x = 0; x < width; x++) {
-    const xVal = x * cellSize - 0.5;
-    ctx.moveTo(xVal, 0);
-    ctx.lineTo(xVal, height * cellSize);
-  }
-
-  ctx.stroke();
-}
-
 function drawAll() {
-  const threading = document.getElementById("threading-canvas");
-  const tieUp = document.getElementById("tie-up-canvas");
-  const treadling = document.getElementById("treadling-canvas");
+  const { cellSize, draft } = GLOBAL_STATE;
 
-  drawBitmap(threading, GLOBAL_STATE.draft.threading);
-  drawBitmap(tieUp, GLOBAL_STATE.draft.tieUp);
-  drawBitmap(treadling, GLOBAL_STATE.draft.treadling);
+  const threading = document.getElementById("threading");
+  const tieUp = document.getElementById("tie-up");
+  const treadling = document.getElementById("treadling");
+
+  drawBitmap(threading, draft.threading, cellSize);
+  drawBitmap(tieUp, draft.tieUp, cellSize);
+  drawBitmap(treadling, draft.treadling, cellSize);
+
+  const warpColor = document.getElementById("warp-color");
+  const weftColor = document.getElementById("weft-color");
+
+  drawWarp(warpColor, draft.warpColorSequence, cellSize);
+  drawWeft(weftColor, draft.weftColorSequence, cellSize);
+
+  const drawdown = document.getElementById("drawdown");
+
+  drawDrawdown(drawdown, draft, cellSize);
 }
 
 function r() {

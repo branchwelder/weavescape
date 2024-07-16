@@ -72,14 +72,13 @@ canvas {
   flex: 1;
   display: grid;
   gap: 1rem;
+  margin: 1rem;
   grid-template-columns: 1fr min-content var(--cellsize);
   grid-template-rows: var(--cellsize) min-content 1fr;
 }
 
-.threading {
-  justify-self: end;
-}
-
-.draft {
+.threading-container,
+.drawdown-container,
+.warp-color-container {
   justify-self: end;
 }
