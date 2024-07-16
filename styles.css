@@ -1,0 +1,75 @@
+/* A better box-sizing model */
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0; /* Remove default margins */
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit; /* Remove built-in form fonts */
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-content {
+  display: flex;
+  flex: 1;
+}
+
+.gutter {
+  background-color: #434343;
+  background-repeat: no-repeat;
+  background-position: 50%;
+}
+
+.gutter.gutter-horizontal {
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==");
+  cursor: col-resize;
+}
+
+#drafting-pane {
+  display: flex;
+}
+
+#sim-pane {
+  background-color: #527486;
+}
+
+.toolbar {
+  font-family: sans-serif;
+  font-size: large;
+  font-weight: 800;
+  padding: 5px;
+  background-color: #262626;
+  color: #e5e5e5;
+}
+
+.draft-layout {
+  --cellsize: 16px;
+  flex: 1;
+  display: grid;
+  gap: 3px;
+  grid-template-columns: 4fr 1fr var(--cellsize);
+  grid-template-rows: var(--cellsize) 1fr 4fr;
+}
+
+.draft-layout > * {
+  background-color: darkkhaki;
+}

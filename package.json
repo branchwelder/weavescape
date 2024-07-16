@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "dev": "vite",
+    "host": "vite --host",
+    "build": "vite build",
+    "preview": "vite build && vite preview"
+  },
+  "dependencies": {
+    "lit-html": "^3.1.4",
+    "split.js": "^1.6.5",
+    "vite": "^5.3.4"
+  }
+}
