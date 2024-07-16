@@ -28,6 +28,12 @@ body {
   flex-direction: column;
 }
 
+canvas {
+  display: block;
+  outline: 1px solid black;
+  image-rendering: pixelated;
+}
+
 .page-content {
   display: flex;
   flex: 1;
@@ -65,11 +71,15 @@ body {
   --cellsize: 16px;
   flex: 1;
   display: grid;
-  gap: 3px;
-  grid-template-columns: 4fr 1fr var(--cellsize);
-  grid-template-rows: var(--cellsize) 1fr 4fr;
+  gap: 1rem;
+  grid-template-columns: 1fr min-content var(--cellsize);
+  grid-template-rows: var(--cellsize) min-content 1fr;
 }
 
-.draft-layout > * {
-  background-color: darkkhaki;
+.threading {
+  justify-self: end;
+}
+
+.draft {
+  justify-self: end;
 }
