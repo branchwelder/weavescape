@@ -52,15 +52,17 @@ function view() {
           <div></div>
           <div></div>
           <div class="threading-container">
-            <canvas id="threading"></canvas>
+            <canvas id="threading" @click=${editThreading}></canvas>
           </div>
-          <div class="tie-up"><canvas id="tie-up"></canvas></div>
+          <div class="tie-up">
+            <canvas id="tie-up" @click=${editTieup}></canvas>
+          </div>
           <div></div>
           <div class="drawdown-container">
             <canvas id="drawdown"></canvas>
           </div>
           <div class="treadling-container">
-            <canvas id="treadling"></canvas>
+            <canvas id="treadling" @click=${editTreadling}></canvas>
           </div>
           <div class="weft-color">
             <canvas id="weft-color"></canvas>
@@ -69,6 +71,66 @@ function view() {
       </div>
       <div id="sim-pane"></div>
     </div>`;
+}
+
+function getCell(event) {
+  const bounds = event.currentTarget.getBoundingClientRect();
+  const { cellSize } = GLOBAL_STATE;
+
+  let x = Math.floor((event.clientX - bounds.x) / cellSize);
+  let y = Math.floor((event.clientY - bounds.y) / cellSize);
+  x = x < 0 ? 0 : x;
+  y = y < 0 ? 0 : y;
+
+  return { row: y, col: x };
+}
+
+function editThreading(e) {
+  const { row, col } = getCell(e);
+  const { cellSize, draft } = GLOBAL_STATE;
+
+  let curr = draft.threading[row][col];
+
+  if (curr == 0) {
+    draft.threading[row][col] = 1;
+  } else {
+    draft.threading[row][col] = 0;
+  }
+
+  const threading = document.getElementById("threading");
+  drawBitmap(threading, draft.threading, cellSize);
+}
+
+function editTreadling(e) {
+  const { row, col } = getCell(e);
+  const { cellSize, draft } = GLOBAL_STATE;
+
+  let curr = draft.treadling[row][col];
+
+  if (curr == 0) {
+    draft.treadling[row][col] = 1;
+  } else {
+    draft.treadling[row][col] = 0;
+  }
+
+  const treadling = document.getElementById("treadling");
+  drawBitmap(treadling, draft.treadling, cellSize);
+}
+
+function editTieup(e) {
+  const { row, col } = getCell(e);
+  const { cellSize, draft } = GLOBAL_STATE;
+
+  let curr = draft.tieUp[row][col];
+
+  if (curr == 0) {
+    draft.tieUp[row][col] = 1;
+  } else {
+    draft.tieUp[row][col] = 0;
+  }
+
+  const tieUp = document.getElementById("tie-up");
+  drawBitmap(tieUp, draft.tieUp, cellSize);
 }
 
 function drawAll() {
