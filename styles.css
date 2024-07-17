@@ -78,6 +78,11 @@ canvas {
   grid-template-rows: min-content min-content 1fr;
 }
 
+.threading-container {
+  display: flex;
+  flex-direction: row;
+}
+
 .threading-container,
 .drawdown-container,
 .warp-color-container {
@@ -91,19 +96,22 @@ canvas {
 .draft-controls {
   padding: 0.5rem;
   background-color: var(--background);
-  width: min-content;
+  width: 5rem;
 }
 
 .draft-controls > div {
   display: block;
 }
 
-select {
+select,
+input[type="number"] {
   padding: 0.5rem;
   font-size: 1rem;
   border: none;
   background-color: #434343;
   color: var(--text);
+  width: 100%;
+  margin: 0 0 1rem 0;
 }
 
 label {
@@ -114,6 +122,8 @@ label {
 }
 
 select:active,
-select:focus {
+select:focus,
+input[type="number"]:active,
+input[type="number"]:focus {
   outline: 1px solid #e5e5e5;
 }

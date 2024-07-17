@@ -46,6 +46,15 @@ function view() {
                 html`<option value=${i}>${i}</option>`
               )}
             </select>
+
+            <label for="input-number-harnesses">
+              harnesses
+            </label>
+            <input id="input-number-harnesses" 
+              type="number" 
+              .value=${GLOBAL_STATE.draft.threading.length}
+              @change=${(e) => updateNumberOfHarnesses(e.target.value)} />
+              />
           </div>
         </div>
         <div class="draft-layout">
@@ -153,6 +162,25 @@ function editThreading(e) {
 
   updateDrawdown();
   drawThreading();
+}
+
+// number of harnesses is equivalent to the number of rows in the threading matrix
+function updateNumberOfHarnesses(num) {
+  const { draft } = GLOBAL_STATE;
+
+  if (num < draft.threading.length) {
+    draft.threading = draft.threading.slice(0, num);
+    draft.tieUp = draft.tieUp.slice(0, num);
+  } else {
+    const diff = num - draft.threading.length;
+    for (let i = 0; i < diff; i += 1) {
+      draft.threading.push(new Array(draft.threading[0].length).fill(0));
+      draft.tieUp.push(new Array(draft.tieUp[0].length).fill(0));
+    }
+  }
+
+  updateDrawdown();
+  drawAll();
 }
 
 function editTreadling(e) {
