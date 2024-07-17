@@ -27,19 +27,17 @@ function view() {
               type="number"
               .value=${String(GLOBAL_STATE.draft.threading.length)}
               @change=${(e) => updateNumberOfHarnesses(e.target.value)} />
-            <label for="input-number-warp-threads">
-              Warp
-            </label>
-            <input id="input-number-warp-threads" 
-              type="number" 
-              .value=${GLOBAL_STATE.draft.threading[0].length}
+            <label for="input-number-warp-threads"> Warp </label>
+            <input
+              id="input-number-warp-threads"
+              type="number"
+              .value=${String(GLOBAL_STATE.draft.threading[0].length)}
               @change=${(e) => updateWarpThreads(e.target.value)} />
-            <label for="input-number-weft-threads">
-              Weft
-            </label>
-            <input id="input-number-weft-threads" 
-              type="number" 
-              .value=${GLOBAL_STATE.draft.treadling.length}
+            <label for="input-number-weft-threads"> Weft </label>
+            <input
+              id="input-number-weft-threads"
+              type="number"
+              .value=${String(GLOBAL_STATE.draft.treadling.length)}
               @change=${(e) => updateWeftThreads(e.target.value)} />
           </div>
           ${yarnPicker()}
@@ -137,7 +135,7 @@ function setDraft(draft) {
     i < draft.treadling.length / 2 ? 2 : 3
   );
 
-  console.log(GLOBAL_STATE);
+  // console.log(GLOBAL_STATE);
   updateDrawdown();
   drawAll();
 }
@@ -170,7 +168,7 @@ function updateNumberOfHarnesses(num) {
     const diff = num - draft.threading.length;
     for (let i = 0; i < diff; i += 1) {
       draft.threading.push(new Array(draft.threading[0].length).fill(0));
-      draft.tieUp.forEach((row) => row.unshift(0))
+      draft.tieUp.forEach((row) => row.unshift(0));
       draft.tieUp.push(new Array(draft.tieUp[0].length).fill(0));
       draft.treadling.forEach((row) => row.unshift(0));
     }
