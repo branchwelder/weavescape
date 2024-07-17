@@ -65,6 +65,16 @@ function view() {
     </div>`;
 }
 
+function getTieUpColumn(draft, colIndex) {
+  const column = [];
+
+  draft.tieUp.forEach((row) => {
+    column.push(row[colIndex]);
+  });
+
+  return column;
+}
+
 function makeDrawdown(draft) {
   const dd = [];
 
@@ -74,7 +84,7 @@ function makeDrawdown(draft) {
     row.forEach((cell, j) => {
       if (cell === 1) {
         // if treadling cell is on, get correspondin tie-up column
-        draft.tieUp[j].forEach((tuCell, k) => {
+        getTieUpColumn(draft, j).forEach((tuCell, k) => {
           if (tuCell === 1) {
             // if tie-up cell is on, get corresponding threading row
             draft.threading[k].forEach((thread, x) => {
