@@ -31,25 +31,28 @@ function view() {
           ${yarnPicker()}
         </div>
         <div class="draft-layout">
-          <div class="warp-color-container">
+          <div id="warp-color-container" class="scroller">
+            <div class="spacer"></div>
             <canvas id="warp-color"></canvas>
           </div>
           <div></div>
           <div></div>
-          <div class="threading-container">
+          <div id="threading-container" class="scroller">
+            <div class="spacer"></div>
             <canvas id="threading" @click=${editThreading}></canvas>
           </div>
-          <div class="tie-up">
+          <div id="tie-up-container">
             <canvas id="tie-up" @click=${editTieup}></canvas>
           </div>
           <div></div>
-          <div class="drawdown-container">
+          <div id="drawdown-container" class="scroller">
+            <div class="spacer"></div>
             <canvas id="drawdown"></canvas>
           </div>
-          <div class="treadling-container">
+          <div id="treadling-container" class="scroller">
             <canvas id="treadling" @click=${editTreadling}></canvas>
           </div>
-          <div class="weft-color">
+          <div id="weft-color-container" class="scroller">
             <canvas id="weft-color"></canvas>
           </div>
         </div>
@@ -245,6 +248,83 @@ function r() {
   window.requestAnimationFrame(r);
 }
 
+function addScrollSync() {
+  const drawdownContainer = document.getElementById("drawdown-container");
+  const treadlingContainer = document.getElementById("treadling-container");
+  const threadingContainer = document.getElementById("threading-container");
+  const warpColorSequenceContainer = document.getElementById(
+    "warp-color-container"
+  );
+  const weftColorSequenceContainer = document.getElementById(
+    "weft-color-container"
+  );
+
+  let isSyncingTreadlingScroll = false;
+  let isSyncingThreadingScroll = false;
+  let isSyncingDrawdownScroll = false;
+  let isSyncingWarpScroll = false;
+  let isSyncingWeftScroll = false;
+
+  drawdownContainer.onscroll = function () {
+    if (!isSyncingDrawdownScroll) {
+      isSyncingTreadlingScroll = true;
+      isSyncingThreadingScroll = true;
+      isSyncingWarpScroll = true;
+      isSyncingWeftScroll = true;
+      treadlingContainer.scrollTop = this.scrollTop;
+      threadingContainer.scrollLeft = this.scrollLeft;
+      warpColorSequenceContainer.scrollLeft = this.scrollLeft;
+      weftColorSequenceContainer.scrollTop = this.scrollTop;
+    }
+
+    isSyncingDrawdownScroll = false;
+  };
+
+  threadingContainer.onscroll = function () {
+    if (!isSyncingThreadingScroll) {
+      isSyncingDrawdownScroll = true;
+      isSyncingWarpScroll = true;
+      drawdownContainer.scrollLeft = this.scrollLeft;
+      warpColorSequenceContainer.scrollLeft = this.scrollLeft;
+    }
+
+    isSyncingThreadingScroll = false;
+  };
+
+  warpColorSequenceContainer.onscroll = function () {
+    if (!isSyncingWarpScroll) {
+      isSyncingThreadingScroll = true;
+      isSyncingDrawdownScroll = true;
+      drawdownContainer.scrollLeft = this.scrollLeft;
+      threadingContainer.scrollLeft = this.scrollLeft;
+    }
+
+    isSyncingWarpScroll = false;
+  };
+
+  weftColorSequenceContainer.onscroll = function () {
+    if (!isSyncingWeftScroll) {
+      isSyncingTreadlingScroll = true;
+      isSyncingDrawdownScroll = true;
+      drawdownContainer.scrollTop = this.scrollTop;
+      treadlingContainer.scrollTop = this.scrollTop;
+    }
+
+    isSyncingWeftScroll = false;
+  };
+
+  treadlingContainer.onscroll = function () {
+    if (!isSyncingTreadlingScroll) {
+      isSyncingTreadlingScroll = true;
+      isSyncingDrawdownScroll = true;
+      drawdownContainer.scrollTop = this.scrollTop;
+      weftColorSequenceContainer.scrollTop = this.scrollTop;
+    }
+
+    isSyncingTreadlingScroll = false;
+  };
+}
+
 function init() {
   r();
 
@@ -257,6 +337,8 @@ function init() {
   updateDrawdown();
 
   drawAll();
+
+  addScrollSync();
 }
 
 window.onload = init;

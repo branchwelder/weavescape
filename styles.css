@@ -48,6 +48,7 @@ canvas {
 .page-content {
   display: flex;
   flex: 1;
+  overflow: hidden;
 }
 
 .gutter {
@@ -78,21 +79,30 @@ canvas {
   display: grid;
   gap: 1rem;
   padding: 1rem;
-  overflow: scroll;
+  overflow: hidden;
+  justify-content: end;
   box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.69) inset;
   grid-template-columns: 1fr min-content min-content;
   grid-template-rows: min-content min-content 1fr;
 }
 
-.threading-container {
+#threading-container,
+#drawdown-container,
+#warp-color-container {
+  overflow-x: auto;
   display: flex;
-  flex-direction: row;
+  align-items: start;
 }
 
-.threading-container,
-.drawdown-container,
-.warp-color-container {
-  justify-self: end;
+#treadling-container,
+#drawdown-container,
+#weft-color-container {
+  overflow-y: auto;
+}
+
+.spacer {
+  min-width: 0;
+  flex: 1;
 }
 
 #sim-pane {
@@ -295,4 +305,8 @@ button.btn.icon {
 button.btn.solid {
   background-color: #343434;
   box-shadow: 0 0 2px 0 black;
+}
+
+.scroller::-webkit-scrollbar {
+  display: none;
 }
