@@ -84,6 +84,16 @@ export function drawWeft(canvas, sequence, cellSize) {
   drawGrid(ctx, cellSize, 1, height);
 }
 
+function getWarpColor(draft, x) {
+  const warpColor = draft.warpColorSequence[x % draft.warpColorSequence.length];
+  return warpColor;
+}
+
+function getWeftColor(draft, x) {
+  const weftColor = draft.weftColorSequence[x % draft.weftColorSequence.length];
+  return weftColor;
+}
+
 export function drawDrawdown(canvas, draft, cellSize) {
   const ctx = canvas.getContext("2d");
 
@@ -92,6 +102,36 @@ export function drawDrawdown(canvas, draft, cellSize) {
 
   canvas.height = height * cellSize;
   canvas.width = width * cellSize;
+
+  draft.treadling.forEach((row, i) => {
+    let combined = new Array(draft.threading[0].length).fill(0);
+
+    row.forEach((cell, j) => {
+      if (cell === 1) {
+        // if treadling cell is on, get correspondin tie-up column
+        draft.tieUp[j].forEach((tuCell, k) => {
+          if (tuCell === 1) {
+            // if tie-up cell is on, get corresponding threading row
+            draft.threading[k].forEach((thread, x) => {
+              if (thread === 1) {
+                combined[x] = 1;
+              }
+            })
+          }
+        })
+      }
+    })
+
+    combined.forEach((cell, x) => {
+      if (cell === 1) {
+        ctx.fillStyle = getWeftColor(draft, i);
+        ctx.fillRect(x * cellSize, i * cellSize, cellSize, cellSize);
+      } else {
+        ctx.fillStyle = getWarpColor(draft, x);
+        ctx.fillRect(x * cellSize, i * cellSize, cellSize, cellSize);
+      }
+    })
+  })
 
   drawGrid(ctx, cellSize, width, height);
 }
