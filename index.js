@@ -17,7 +17,7 @@ function view() {
               id="select-preset-pattern"
               @change=${(e) => setDraft(patterns[e.target.value])}>
               ${patterns.map(
-                (draft, i) => html`<option value=${i}>${i}</option>`
+                (draft, i) => html`<option value=${i}>${i + 1}</option>`
               )}
             </select>
 
@@ -27,6 +27,20 @@ function view() {
               type="number"
               .value=${String(GLOBAL_STATE.draft.threading.length)}
               @change=${(e) => updateNumberOfHarnesses(e.target.value)} />
+            <label for="input-number-warp-threads">
+              warp
+            </label>
+            <input id="input-number-warp-threads" 
+              type="number" 
+              .value=${GLOBAL_STATE.draft.threading[0].length}
+              @change=${(e) => updateWarpThreads(e.target.value)} />
+            <label for="input-number-weft-threads">
+              weft
+            </label>
+            <input id="input-number-weft-threads" 
+              type="number" 
+              .value=${GLOBAL_STATE.draft.treadling.length}
+              @change=${(e) => updateWeftThreads(e.target.value)} />
           </div>
           ${yarnPicker()}
         </div>
@@ -141,18 +155,57 @@ function editThreading(e) {
   drawThreading();
 }
 
-// number of harnesses is equivalent to the number of rows in the threading matrix
 function updateNumberOfHarnesses(num) {
   const { draft } = GLOBAL_STATE;
 
   if (num < draft.threading.length) {
     draft.threading = draft.threading.slice(0, num);
     draft.tieUp = draft.tieUp.slice(0, num);
+    draft.tieUp = draft.tieUp.map((row) => row.splice(1, num));
+    draft.treadling = draft.treadling.map((row) => row.splice(1, num));
   } else {
     const diff = num - draft.threading.length;
     for (let i = 0; i < diff; i += 1) {
       draft.threading.push(new Array(draft.threading[0].length).fill(0));
+      draft.tieUp.forEach((row) => row.unshift(0))
       draft.tieUp.push(new Array(draft.tieUp[0].length).fill(0));
+      draft.treadling.forEach((row) => row.unshift(0));
+    }
+  }
+
+  updateDrawdown();
+  drawAll();
+}
+
+function updateWeftThreads(num) {
+  const { draft } = GLOBAL_STATE;
+
+  if (num < draft.treadling.length) {
+    draft.treadling = draft.treadling.slice(0, num);
+    draft.weftColorSequence = draft.weftColorSequence.slice(0, num);
+  } else {
+    const diff = num - draft.treadling.length;
+    for (let i = 0; i < diff; i += 1) {
+      draft.treadling.push(new Array(draft.treadling[0].length).fill(0));
+      draft.weftColorSequence.push(draft.weftColorSequence[0]);
+    }
+  }
+
+  updateDrawdown();
+  drawAll();
+}
+
+function updateWarpThreads(num) {
+  const { draft } = GLOBAL_STATE;
+
+  if (num < draft.threading[0].length) {
+    draft.threading = draft.threading.map((row) => row.splice(1, num));
+    draft.warpColorSequence = draft.warpColorSequence.splice(1, num);
+  } else {
+    const diff = num - draft.threading[0].length;
+    for (let i = 0; i < diff; i += 1) {
+      draft.threading.forEach((row) => row.unshift(0));
+      draft.warpColorSequence.unshift(draft.warpColorSequence[0]);
     }
   }
 
