@@ -8,7 +8,8 @@
 :root {
   font-family: sans-serif;
   font-size: 16px;
-  --background: #262626;
+  --background: #333333;
+  --toolbar: #464646;
   --text: #e5e5e5;
 }
 
@@ -33,6 +34,9 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
+  background-color: var(--background);
+  color: var(--text);
+  overflow: hidden;
 }
 
 canvas {
@@ -65,7 +69,7 @@ canvas {
   font-size: large;
   font-weight: 800;
   padding: 5px;
-  background-color: var(--background);
+  background-color: var(--toolbar);
   color: var(--text);
 }
 
@@ -73,7 +77,9 @@ canvas {
   flex: 1;
   display: grid;
   gap: 1rem;
-  margin: 1rem;
+  padding: 1rem;
+  overflow: scroll;
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.69) inset;
   grid-template-columns: 1fr min-content min-content;
   grid-template-rows: min-content min-content 1fr;
 }
@@ -95,8 +101,8 @@ canvas {
 
 .draft-controls {
   padding: 0.5rem;
-  background-color: var(--background);
-  width: 5rem;
+  background-color: var(--toolbar);
+  flex: 0 0 6.5rem;
 }
 
 .draft-controls > div {
@@ -126,4 +132,167 @@ select:focus,
 input[type="number"]:active,
 input[type="number"]:focus {
   outline: 1px solid #e5e5e5;
+}
+
+/**********************************
+
+YARN PICKER
+
+**********************************/
+
+#yarn-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+}
+
+.btn.color-select {
+  align-self: auto;
+  flex: 0 0 50px;
+  padding: 0;
+  border-radius: 8px;
+  border: 1px solid black;
+  overflow: hidden;
+  justify-content: space-between;
+}
+
+.color-preview {
+  aspect-ratio: 1;
+  height: 100%;
+  position: relative;
+  background: var(--current);
+}
+
+.color-label {
+  font-size: larger;
+  font-weight: 900;
+  flex: 1;
+  padding: 0 8px;
+  line-height: 0;
+}
+
+#yarn-picker .btn.selected {
+  outline: 1px solid white;
+  color: #fff;
+  background-color: hsla(0, 0%, 54%, 0.216);
+}
+
+.edit-color-btn {
+  border: 0;
+  outline: 0;
+  padding: 0;
+  cursor: pointer;
+  background-color: transparent;
+  height: 100%;
+  width: 100%;
+}
+
+.edit-color-icon {
+  color: #fff;
+
+  position: absolute;
+  line-height: 1;
+  top: 5px;
+  left: 5px;
+}
+
+.edit-color-icon > i {
+  line-height: 0;
+  text-shadow: 0px 0px 2px black;
+}
+
+.delete-color-button {
+  position: absolute;
+  display: flex;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background-color: transparent;
+  color: #343434;
+  font-size: x-large;
+  line-height: 1;
+
+  bottom: 2px;
+  right: 2px;
+
+  cursor: pointer;
+}
+
+.delete-color-button:hover {
+  color: red;
+  text-shadow: 0px 0px 3px black;
+}
+
+/***********************************
+
+BUTTONS
+
+***********************************/
+
+/* Reset Link style */
+a.btn {
+  text-decoration: none;
+}
+
+/* Reset button style */
+button.btn {
+  border: none;
+  background-color: transparent;
+  font-family: inherit;
+  padding: 0;
+  cursor: inherit;
+}
+
+a.btn,
+button.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 8px;
+  color: var(--text-accent);
+
+  text-align: center;
+  align-self: start;
+
+  padding: 0.5em;
+}
+
+a.btn:hover,
+button.btn:hover {
+  color: #fff;
+  background-color: hsla(317, 82%, 74%, 0.448);
+}
+
+a.btn:focus,
+button.btn:focus {
+  outline-style: solid;
+  outline-color: transparent;
+  box-shadow: 0 0 0 2px hsla(317, 82%, 74%, 0.8);
+}
+
+/* Icon + text button */
+button.btn.icon-text {
+  font-size: 1em;
+  line-height: 1;
+
+  gap: 0.5em;
+}
+
+button.btn.icon-text > i {
+  width: 1em;
+  height: 1em;
+}
+
+/* Icon button */
+button.btn.icon {
+  aspect-ratio: 1;
+  padding: 0.3em;
+  font-size: 1.5em;
+}
+
+/* Solid button */
+button.btn.solid {
+  background-color: #343434;
+  box-shadow: 0 0 2px 0 black;
 }

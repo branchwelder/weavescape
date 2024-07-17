@@ -1,9 +1,10 @@
+import { GLOBAL_STATE } from "./state";
 import { yarnRenderer } from "./yarnRenderer";
 
 const yarnDiameter = 1;
 const yarnRadius = yarnDiameter / 2;
 
-const spacingFactor = 1.5;
+const spacingFactor = 1;
 const nodeSpacing = yarnDiameter * spacingFactor;
 
 function initializeGrid(width, height) {
@@ -81,10 +82,11 @@ function hexToRgb(hex) {
         parseInt(result[3], 16) / 255,
       ]
     : [0, 0, 0];
+  draft;
 }
 
 export function initializeSim(simCanvas, draft) {
-  const yarnPalette = draft.yarnPalette.map((hex) => hexToRgb(hex));
+  const yarnPalette = GLOBAL_STATE.yarnPalette.map((hex) => hexToRgb(hex));
 
   const { drawdown, warpColorSequence: warp, weftColorSequence: weft } = draft;
 

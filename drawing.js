@@ -1,3 +1,15 @@
+import { GLOBAL_STATE } from "./state";
+
+function getWarpColor(draft, x) {
+  const yarnIndex = draft.warpColorSequence[x % draft.warpColorSequence.length];
+  return GLOBAL_STATE.yarnPalette[yarnIndex];
+}
+
+function getWeftColor(draft, x) {
+  const yarnIndex = draft.weftColorSequence[x % draft.weftColorSequence.length];
+  return GLOBAL_STATE.yarnPalette[yarnIndex];
+}
+
 function drawGrid(ctx, cellSize, width, height) {
   ctx.beginPath();
 
@@ -82,16 +94,6 @@ export function drawWeft(canvas, draft, cellSize) {
   ctx.lineWidth = 1;
 
   drawGrid(ctx, cellSize, 1, height);
-}
-
-function getWarpColor(draft, x) {
-  const yarnIndex = draft.warpColorSequence[x % draft.warpColorSequence.length];
-  return draft.yarnPalette[yarnIndex];
-}
-
-function getWeftColor(draft, x) {
-  const yarnIndex = draft.weftColorSequence[x % draft.weftColorSequence.length];
-  return draft.yarnPalette[yarnIndex];
 }
 
 export function drawDrawdown(canvas, draft, cellSize) {
