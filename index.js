@@ -2,6 +2,7 @@ import { html, render } from "lit-html";
 import Split from "split.js";
 import { drawBitmap, drawDrawdown, drawWarp, drawWeft } from "./drawing";
 import { initializeSim } from "./yarnSimulation";
+import patterns from "./patterns.json";
 
 let GLOBAL_STATE = {
   cellSize: 20,
@@ -35,6 +36,18 @@ function view() {
   return html`<div class="toolbar"><span>weavescape</span></div>
     <div class="page-content">
       <div id="drafting-pane">
+        <div class="draft-controls">
+          <div>
+            <label for="select-preset-pattern">
+              preset
+            </label>
+            <select id="select-preset-pattern" @change=${(e) => setDraft(patterns[e.target.value])}>
+              ${patterns.map((draft, i) =>
+                html`<option value=${i}>${i}</option>`
+              )}
+            </select>
+          </div>
+        </div>
         <div class="draft-layout">
           <div class="warp-color-container">
             <canvas id="warp-color"></canvas>
@@ -83,7 +96,7 @@ function makeDrawdown(draft) {
 
     row.forEach((cell, j) => {
       if (cell === 1) {
-        // if treadling cell is on, get correspondin tie-up column
+        // if treadling cell is on, get corresponding tie-up column
         getTieUpColumn(draft, j).forEach((tuCell, k) => {
           if (tuCell === 1) {
             // if tie-up cell is on, get corresponding threading row
@@ -113,6 +126,17 @@ function getCell(event) {
   y = y < 0 ? 0 : y;
 
   return { row: y, col: x };
+}
+
+function setDraft(draft) {
+  GLOBAL_STATE.draft = draft;
+  GLOBAL_STATE.draft.yarnPalette = ["#d31b1b", "#3374a9", "#d69d21", "#56c246"]
+  GLOBAL_STATE.draft.warpColorSequence = draft.threading[0].map((d, i) => i < draft.threading[0].length/2 ? 0 : 1);
+  GLOBAL_STATE.draft.weftColorSequence = draft.treadling.map((d, i) => i < draft.treadling.length/2 ? 2 : 3);
+
+  console.log(GLOBAL_STATE)
+  updateDrawdown();
+  drawAll();  
 }
 
 function editThreading(e) {
