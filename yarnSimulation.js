@@ -117,5 +117,11 @@ export function initializeSim(simCanvas) {
 
   console.log(yarnData);
   yarnRenderer.init(yarnData, simCanvas);
-  yarnRenderer.draw();
+
+  function r() {
+    yarnRenderer.draw();
+    requestAnimationFrame(r);
+  }
+
+  r();
 }

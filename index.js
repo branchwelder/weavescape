@@ -1,7 +1,7 @@
 import { html, render } from "lit-html";
 import Split from "split.js";
 import { drawBitmap, drawDrawdown, drawWarp, drawWeft } from "./drawing";
-
+import { initializeSim } from "./yarnSimulation";
 let GLOBAL_STATE = {
   cellSize: 20,
   draft: {
@@ -69,7 +69,9 @@ function view() {
           </div>
         </div>
       </div>
-      <div id="sim-pane"></div>
+      <div id="sim-pane">
+        <canvas id="sim-canvas"></canvas>
+      </div>
     </div>`;
 }
 
@@ -167,12 +169,14 @@ function init() {
   r();
 
   Split(["#drafting-pane", "#sim-pane"], {
-    sizes: [70, 30],
+    sizes: [50, 50],
     minSize: 100,
     gutterSize: 8,
   });
 
   drawAll();
+
+  initializeSim(document.getElementById("sim-canvas"));
 }
 
 window.onload = init;
