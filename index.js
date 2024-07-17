@@ -12,7 +12,7 @@ function view() {
       <div id="drafting-pane">
         <div class="draft-controls">
           <div>
-            <label for="select-preset-pattern"> preset </label>
+            <label for="select-preset-pattern"> Preset </label>
             <select
               id="select-preset-pattern"
               @change=${(e) => setDraft(patterns[e.target.value])}>
@@ -21,21 +21,21 @@ function view() {
               )}
             </select>
 
-            <label for="input-number-harnesses"> harnesses </label>
+            <label for="input-number-harnesses"> Harnesses </label>
             <input
               id="input-number-harnesses"
               type="number"
               .value=${String(GLOBAL_STATE.draft.threading.length)}
               @change=${(e) => updateNumberOfHarnesses(e.target.value)} />
             <label for="input-number-warp-threads">
-              warp
+              Warp
             </label>
             <input id="input-number-warp-threads" 
               type="number" 
               .value=${GLOBAL_STATE.draft.threading[0].length}
               @change=${(e) => updateWarpThreads(e.target.value)} />
             <label for="input-number-weft-threads">
-              weft
+              Weft
             </label>
             <input id="input-number-weft-threads" 
               type="number" 
