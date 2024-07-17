@@ -54,10 +54,6 @@ canvas {
   display: flex;
 }
 
-#sim-pane {
-  background-color: #527486;
-}
-
 .toolbar {
   font-family: sans-serif;
   font-size: large;
@@ -68,13 +64,12 @@ canvas {
 }
 
 .draft-layout {
-  --cellsize: 16px;
   flex: 1;
   display: grid;
   gap: 1rem;
   margin: 1rem;
-  grid-template-columns: 1fr min-content var(--cellsize);
-  grid-template-rows: var(--cellsize) min-content 1fr;
+  grid-template-columns: 1fr min-content min-content;
+  grid-template-rows: min-content min-content 1fr;
 }
 
 .threading-container,
@@ -82,3 +77,8 @@ canvas {
 .warp-color-container {
   justify-self: end;
 }
+/* 
+#sim-canvas {
+  width: 100%;
+  height: 100%;
+} */
