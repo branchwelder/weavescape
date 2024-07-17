@@ -98,7 +98,8 @@ function editThreading(e) {
   }
 
   const threading = document.getElementById("threading");
-  drawBitmap(threading, draft.threading, cellSize);
+  // drawBitmap(threading, draft.threading, cellSize);
+  drawAll();
 }
 
 function editTreadling(e) {
@@ -114,7 +115,8 @@ function editTreadling(e) {
   }
 
   const treadling = document.getElementById("treadling");
-  drawBitmap(treadling, draft.treadling, cellSize);
+  // drawBitmap(treadling, draft.treadling, cellSize);
+  drawAll();
 }
 
 function editTieup(e) {
@@ -130,7 +132,8 @@ function editTieup(e) {
   }
 
   const tieUp = document.getElementById("tie-up");
-  drawBitmap(tieUp, draft.tieUp, cellSize);
+  // drawBitmap(tieUp, draft.tieUp, cellSize);
+  drawAll();
 }
 
 function drawAll() {
