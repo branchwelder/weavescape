@@ -2,24 +2,13 @@ import { html, render } from "lit-html";
 import Split from "split.js";
 import { drawBitmap, drawDrawdown, drawWarp, drawWeft } from "./drawing";
 import { initializeSim } from "./yarnSimulation";
+
 let GLOBAL_STATE = {
   cellSize: 20,
   draft: {
-    warpColorSequence: [
-      "red",
-      "red",
-      "red",
-      "red",
-      "red",
-      "red",
-      "blue",
-      "blue",
-      "blue",
-      "blue",
-      "blue",
-      "blue",
-    ],
-    weftColorSequence: ["green", "green", "yellow", "yellow"],
+    warpColorSequence: [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
+    weftColorSequence: [2, 2, 3, 3],
+    yarnPalette: ["#d31b1b", "#3374a9", "#d69d21", "#56c246"],
     threading: [
       [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1],
       [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0],
@@ -38,6 +27,7 @@ let GLOBAL_STATE = {
       [0, 1, 0, 0],
       [1, 0, 0, 0],
     ],
+    drawdown: [],
   },
 };
 
@@ -75,6 +65,34 @@ function view() {
     </div>`;
 }
 
+function makeDrawdown(draft) {
+  const dd = [];
+
+  draft.treadling.forEach((row, i) => {
+    let combined = new Array(draft.threading[0].length).fill(0);
+
+    row.forEach((cell, j) => {
+      if (cell === 1) {
+        // if treadling cell is on, get correspondin tie-up column
+        draft.tieUp[j].forEach((tuCell, k) => {
+          if (tuCell === 1) {
+            // if tie-up cell is on, get corresponding threading row
+            draft.threading[k].forEach((thread, x) => {
+              if (thread === 1) {
+                combined[x] = 1;
+              }
+            });
+          }
+        });
+      }
+    });
+
+    dd.push(combined);
+  });
+
+  return dd;
+}
+
 function getCell(event) {
   const bounds = event.currentTarget.getBoundingClientRect();
   const { cellSize } = GLOBAL_STATE;
@@ -99,9 +117,8 @@ function editThreading(e) {
     draft.threading[row][col] = 0;
   }
 
-  const threading = document.getElementById("threading");
-  // drawBitmap(threading, draft.threading, cellSize);
-  drawAll();
+  updateDrawdown();
+  drawThreading();
 }
 
 function editTreadling(e) {
@@ -116,9 +133,8 @@ function editTreadling(e) {
     draft.treadling[row][col] = 0;
   }
 
-  const treadling = document.getElementById("treadling");
-  // drawBitmap(treadling, draft.treadling, cellSize);
-  drawAll();
+  updateDrawdown();
+  drawTreadling();
 }
 
 function editTieup(e) {
@@ -133,27 +149,52 @@ function editTieup(e) {
     draft.tieUp[row][col] = 0;
   }
 
+  updateDrawdown();
+  drawTieUp();
+}
+
+function updateDrawdown() {
+  const { draft, cellSize } = GLOBAL_STATE;
+  draft.drawdown = makeDrawdown(draft);
+  const drawdown = document.getElementById("drawdown");
+
+  drawDrawdown(drawdown, draft, cellSize);
+
+  initializeSim(document.getElementById("sim-canvas"), draft);
+}
+
+function drawThreading() {
+  const { cellSize, draft } = GLOBAL_STATE;
+
+  const threading = document.getElementById("threading");
+  drawBitmap(threading, draft.threading, cellSize);
+}
+
+function drawTreadling() {
+  const { cellSize, draft } = GLOBAL_STATE;
+
+  const treadling = document.getElementById("treadling");
+  drawBitmap(treadling, draft.treadling, cellSize);
+}
+
+function drawTieUp() {
+  const { cellSize, draft } = GLOBAL_STATE;
+
   const tieUp = document.getElementById("tie-up");
-  // drawBitmap(tieUp, draft.tieUp, cellSize);
-  drawAll();
+  drawBitmap(tieUp, draft.tieUp, cellSize);
 }
 
 function drawAll() {
   const { cellSize, draft } = GLOBAL_STATE;
-
-  const threading = document.getElementById("threading");
-  const tieUp = document.getElementById("tie-up");
-  const treadling = document.getElementById("treadling");
-
-  drawBitmap(threading, draft.threading, cellSize);
-  drawBitmap(tieUp, draft.tieUp, cellSize);
-  drawBitmap(treadling, draft.treadling, cellSize);
+  drawThreading();
+  drawTreadling();
+  drawTieUp();
 
   const warpColor = document.getElementById("warp-color");
   const weftColor = document.getElementById("weft-color");
 
-  drawWarp(warpColor, draft.warpColorSequence, cellSize);
-  drawWeft(weftColor, draft.weftColorSequence, cellSize);
+  drawWarp(warpColor, draft, cellSize);
+  drawWeft(weftColor, draft, cellSize);
 
   const drawdown = document.getElementById("drawdown");
 
@@ -174,9 +215,9 @@ function init() {
     gutterSize: 8,
   });
 
-  drawAll();
+  updateDrawdown();
 
-  initializeSim(document.getElementById("sim-canvas"));
+  drawAll();
 }
 
 window.onload = init;

@@ -444,7 +444,7 @@ function init(yarnData, canvas) {
   yarnData.forEach((yarn) => {
     if (yarn.pts.length < 6) return;
 
-    const splinePts = new Float32Array(buildYarnCurve(yarn.pts, 12, 0));
+    const splinePts = new Float32Array(buildYarnCurve(yarn.pts, 8, 0));
 
     yarnPoints.push(splinePts);
 
