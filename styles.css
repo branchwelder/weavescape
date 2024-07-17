@@ -11,6 +11,7 @@
   --background: #333333;
   --toolbar: #464646;
   --text: #e5e5e5;
+  --text-accent: #e5e5e5;
 }
 
 * {
@@ -124,7 +125,7 @@ input[type="number"] {
   padding: 0.5rem;
   font-size: 1rem;
   border: none;
-  background-color: #434343;
+  background-color: #343434;
   color: var(--text);
   width: 100%;
   margin: 0 0 1rem 0;
