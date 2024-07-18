@@ -147,10 +147,10 @@ export function drawDrawdown(canvas, draft, cellSize) {
   const containerRepeat = document.getElementById("drawdown-repeat-container");
   const containerRepeatSize = [
     Math.max(tile[0], Math.floor(container.offsetWidth / cellSize) * cellSize),
-    Math.max(tile[1], Math.floor(container.offsetHeight / cellSize) * cellSize),
-  ];
-  containerRepeat.style.width = containerRepeatSize[0] + "px";
-  containerRepeat.style.height = containerRepeatSize[1] + "px";
+    Math.max(tile[1], (Math.floor(container.offsetHeight / cellSize) - 1) * cellSize)
+  ]
+  containerRepeat.style.width = containerRepeatSize[0] + 'px';
+  containerRepeat.style.height = containerRepeatSize[1] + 'px';
 
   const overlay = document.getElementById("drawdown-overlay");
   const ctx3 = overlay.getContext("2d");
