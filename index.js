@@ -61,6 +61,14 @@ function view() {
                 )} />
           </div>
           ${yarnPicker()}
+          <div class="zoom-container">
+            <button class="btn icon" @click=${() => zoomOut()}>
+              <i class="fa-solid fa-magnifying-glass-minus"></i>
+            </button>
+            <button class="btn icon" @click=${() => zoomIn()}>
+              <i class="fa-solid fa-magnifying-glass-plus"></i>
+            </button>
+          </div>
         </div>
         <div class="draft-layout">
           <div id="warp-color-container" class="scroller">
@@ -109,6 +117,16 @@ function view() {
         <canvas id="sim-canvas"></canvas>
       </div>
     </div>`;
+}
+
+function zoomOut() {
+  GLOBAL_STATE.cellSize = GLOBAL_STATE.cellSize - 1;
+  drawAll();
+}
+
+function zoomIn() {
+  GLOBAL_STATE.cellSize = GLOBAL_STATE.cellSize + 1;
+  drawAll();
 }
 
 function editWarp(e) {
@@ -508,8 +526,12 @@ function init() {
     minSize: 100,
     gutterSize: 8,
     onDrag: () => {
-      drawDrawdown(document.getElementById("drawdown"), GLOBAL_STATE.draft, GLOBAL_STATE.cellSize);
-    }
+      drawDrawdown(
+        document.getElementById("drawdown"),
+        GLOBAL_STATE.draft,
+        GLOBAL_STATE.cellSize
+      );
+    },
   });
 
   updateDrawdown();
