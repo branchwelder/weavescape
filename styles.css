@@ -90,6 +90,7 @@ canvas {
 #threading-container,
 #drawdown-container,
 #warp-color-container {
+  position: relative;
   overflow-x: auto;
   display: flex;
   align-items: start;
@@ -99,6 +100,12 @@ canvas {
 #drawdown-container,
 #weft-color-container {
   overflow-y: auto;
+}
+
+#drawdown-repeat {
+  right: 0;
+  top: 0;
+  position: absolute;
 }
 
 .spacer {

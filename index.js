@@ -61,6 +61,7 @@ function view() {
           <div></div>
           <div id="drawdown-container" class="scroller">
             <div class="spacer"></div>
+            <canvas id="drawdown-repeat"></canvas>
             <canvas id="drawdown"></canvas>
           </div>
           <div id="treadling-container" class="scroller">
@@ -319,13 +320,10 @@ function handleHoverCell(e, id) {
   const canvas = document.getElementById(id);
   const ctx = canvas.getContext("2d");
 
-  console.log(row, col)
-
   drawTieUp();
   drawThreading();
   drawTreadling();
 
-  // draw hover box
   ctx.fillStyle = 'hsla(317, 82%, 74%, 0.448)'
   ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
 }

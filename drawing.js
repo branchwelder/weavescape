@@ -14,13 +14,13 @@ function getWeftColor(draft, x) {
 function drawGrid(ctx, cellSize, width, height) {
   ctx.beginPath();
 
-  for (let y = 0; y < height; y++) {
+  for (let y = 0; y < height + 1; y++) {
     const yVal = y * cellSize - 0.5;
     ctx.moveTo(0, yVal);
     ctx.lineTo(width * cellSize, yVal);
   }
 
-  for (let x = 0; x < width; x++) {
+  for (let x = 0; x < width + 1; x++) {
     const xVal = x * cellSize - 0.5;
     ctx.moveTo(xVal, 0);
     ctx.lineTo(xVal, height * cellSize);
@@ -161,4 +161,16 @@ export function drawDrawdown(canvas, draft, cellSize) {
   // ctx.putImageData(imageData, 0, 0);
 
   // drawGrid(ctx, cellSize, width, height);
+  // drawGrid(ctx, cellSize, width, height);
+
+  const canvasRepeat = document.getElementById("drawdown-repeat");
+  const container = document.getElementById("drawdown-container");
+  const ctx2 = canvasRepeat.getContext("2d");
+  const img = document.getElementById("drawdown");
+  const pat = ctx2.createPattern(img, "repeat");
+  canvasRepeat.width = Math.ceil(container.offsetWidth / canvas.width) * canvas.width;
+  canvasRepeat.height = Math.ceil(container.offsetHeight / canvas.height) * canvas.height;
+  ctx2.rect(0, 0, canvasRepeat.width, canvasRepeat.height);
+  ctx2.fillStyle = pat;
+  ctx2.fill();
 }
