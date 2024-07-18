@@ -78,7 +78,7 @@ canvas {
   flex: 1;
   display: grid;
   gap: 1rem;
-  padding: 1rem 1rem 0 0;
+  padding: 1rem;
   overflow: hidden;
   justify-content: end;
   box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.69) inset;
@@ -116,6 +116,12 @@ canvas {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  opacity: 0.5;
+  transition: opacity 200ms;
+}
+
+#drawdown-repeat-container:hover {
+  opacity: 1;
 }
 
 #drawdown-overlay {
