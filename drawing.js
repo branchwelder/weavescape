@@ -146,7 +146,7 @@ export function drawDrawdown(canvas, draft, cellSize) {
 
   const containerRepeat = document.getElementById("drawdown-repeat-container");
   const containerRepeatSize = [
-    Math.max(tile[0], Math.floor(container.offsetWidth / cellSize) * cellSize),
+    Math.max(tile[0], (Math.floor(container.offsetWidth / cellSize) - 1) * cellSize),
     Math.max(tile[1], (Math.floor(container.offsetHeight / cellSize) - 1) * cellSize)
   ]
   containerRepeat.style.width = containerRepeatSize[0] + 'px';
