@@ -13,17 +13,20 @@ function getWeftColor(draft, x) {
 function drawGrid(ctx, cellSize, width, height) {
   ctx.beginPath();
 
-  for (let y = 0; y < height + 1; y++) {
+  for (let y = 0; y < height; y++) {
     const yVal = y * cellSize - 0.5;
     ctx.moveTo(0, yVal);
     ctx.lineTo(width * cellSize, yVal);
   }
 
-  for (let x = 0; x < width + 1; x++) {
+  for (let x = 0; x < width; x++) {
     const xVal = x * cellSize - 0.5;
     ctx.moveTo(xVal, 0);
     ctx.lineTo(xVal, height * cellSize);
   }
+
+  ctx.moveTo(0.1, 0);
+  ctx.lineTo(0.1, height * cellSize);
 
   ctx.stroke();
 }
@@ -127,17 +130,39 @@ export function drawDrawdown(canvas, draft, cellSize) {
   }
 
   const canvasRepeat = document.getElementById("drawdown-repeat");
+  const ctxRepeat = canvasRepeat.getContext("2d");
   const container = document.getElementById("drawdown-container");
-  const ctx2 = canvasRepeat.getContext("2d");
   const img = document.getElementById("drawdown");
-  const pat = ctx2.createPattern(img, "repeat");
-  canvasRepeat.width =
-    Math.ceil(container.offsetWidth / canvas.width) * canvas.width;
-  canvasRepeat.height =
-    Math.ceil(container.offsetHeight / canvas.height) * canvas.height;
-  ctx2.rect(0, 0, canvasRepeat.width, canvasRepeat.height);
-  ctx2.fillStyle = pat;
-  ctx2.fill();
+  const pat = ctxRepeat.createPattern(img, "repeat");
+  const tile = [canvas.width, canvas.height];
+  const repeatWidth = Math.ceil(container.offsetWidth / tile[0]) * tile[0];
+  const repeatHeight = Math.ceil(container.offsetHeight / tile[1]) * tile[1];
+  canvasRepeat.width = repeatWidth;
+  canvasRepeat.height = repeatHeight;
+
+  ctxRepeat.rect(0, 0, repeatWidth, repeatHeight);
+  ctxRepeat.fillStyle = pat;
+  ctxRepeat.fill();
+
+  const containerRepeat = document.getElementById("drawdown-repeat-container");
+  const containerRepeatSize = [
+    Math.max(tile[0], Math.floor(container.offsetWidth / cellSize) * cellSize),
+    Math.max(tile[1], Math.floor(container.offsetHeight / cellSize) * cellSize),
+  ];
+  containerRepeat.style.width = containerRepeatSize[0] + "px";
+  containerRepeat.style.height = containerRepeatSize[1] + "px";
+
+  const overlay = document.getElementById("drawdown-overlay");
+  const ctx3 = overlay.getContext("2d");
+  overlay.width = canvas.width;
+  overlay.height = canvas.height;
+
+  // adjust to position to sync with scrolling
+  overlay.style.right = containerRepeatSize[0] === tile[0] ? "auto" : 0;
+  containerRepeat.style.right = containerRepeatSize[0] === tile[0] ? "auto" : 0;
+  canvasRepeat.style.right = containerRepeatSize[0] === tile[0] ? "auto" : 0;
+
+  drawGrid(ctx3, cellSize, canvas.width, canvas.height);
 }
 
 export function drawThreading() {

@@ -42,7 +42,6 @@ body {
 
 canvas {
   display: block;
-  outline: 1px solid black;
   image-rendering: pixelated;
 }
 
@@ -102,10 +101,28 @@ canvas {
   overflow-y: auto;
 }
 
-#drawdown-repeat {
+#drawdown {
+  position: relative;
+}
+
+#drawdown-repeat,
+#drawdown-repeat-container {
   right: 0;
   top: 0;
   position: absolute;
+}
+
+#drawdown-repeat-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+#drawdown-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  pointer-events: none;
 }
 
 .spacer {
