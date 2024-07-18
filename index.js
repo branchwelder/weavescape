@@ -39,6 +39,8 @@ function view() {
               type="number"
               .value=${String(GLOBAL_STATE.draft.treadling.length)}
               @change=${(e) => updateWeftThreads(e.target.value)} />
+            <label> Yarn Diameter </label>
+            <input id="input-yarn-diameter" type="range" min="0.1" max="1" step="0.01" value="0.5" @change=${() => initializeSim(document.getElementById("sim-canvas"), GLOBAL_STATE.draft)} />
           </div>
           ${yarnPicker()}
         </div>
@@ -62,7 +64,7 @@ function view() {
             <canvas id="drawdown"></canvas>
           </div>
           <div id="treadling-container" class="scroller">
-            <canvas id="treadling" @click=${editTreadling}></canvas>
+            <canvas id="treadling" @click=${editTreadling} @mousemove=${(e) => highlightDraft(e, 'treadling')} @mouseleave=${resetHighlight}></canvas>
           </div>
           <div id="weft-color-container" class="scroller">
             <canvas id="weft-color"></canvas>
@@ -228,6 +230,8 @@ function editTreadling(e) {
 
   updateDrawdown();
   drawTreadling();
+
+  highlightDraft(e, 'treadling')
 }
 
 function editTieup(e) {
@@ -244,6 +248,71 @@ function editTieup(e) {
 
   updateDrawdown();
   drawTieUp();
+}
+
+function highlightDraft(e, type) {
+  const { row, col } = getCell(e);
+  const { cellSize, draft } = GLOBAL_STATE;
+  const tieUp = document.getElementById("tie-up");
+  const ctx = tieUp.getContext("2d");
+  const threading = document.getElementById("threading");
+  const ctx2 = threading.getContext("2d");
+  const treadling = document.getElementById("treadling");
+  const ctx3 = treadling.getContext("2d");
+
+  drawTieUp();
+  drawThreading();
+  drawTreadling();
+
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = "magenta";
+  ctx.fillStyle = 'rgba(50,50,50,0.7)'
+  ctx2.lineWidth = 2;
+  ctx2.strokeStyle = "magenta";
+  ctx2.fillStyle = 'rgba(50,50,50,0.7)'
+  ctx3.lineWidth = 2;
+  ctx3.strokeStyle = "magenta";
+  ctx3.fillStyle = 'rgba(50,50,50,0.7)'
+  
+  const treadlingRow = draft.treadling[row]
+  let highlightThreadingRows = new Array(draft.threading.length).fill(0);
+
+  treadlingRow.forEach((cell, i) => {
+    const tieUpCol = getTieUpColumn(draft, i);
+    if (cell === 1) {
+      ctx.strokeRect(i * cellSize, 0, cellSize, tieUpCol.length * cellSize);
+
+      tieUpCol.forEach((cell, j) => {
+        if (cell === 1) {
+          highlightThreadingRows[j] = 1;
+        }
+      })
+    } else {
+      ctx.fillRect(i * cellSize, 0, cellSize, tieUpCol.length * cellSize);
+    }
+  })
+
+  highlightThreadingRows.forEach((cell, i) => {
+    if (cell === 1) {
+      ctx2.strokeRect(0, i * cellSize, draft.threading[0].length * cellSize, cellSize);
+    } else {
+      ctx2.fillRect(0, i * cellSize, draft.threading[0].length * cellSize, cellSize);
+    }
+  })
+
+  draft.treadling.forEach((_, i) => {
+    if (i === row) {
+      ctx3.strokeRect(0, i * cellSize, draft.treadling[0].length * cellSize, cellSize);
+    } else {
+      ctx3.fillRect(0, i * cellSize, draft.treadling[0].length * cellSize, cellSize);
+    }
+  })
+}
+
+function resetHighlight() {
+  drawTieUp();
+  drawThreading();
+  drawTreadling();
 }
 
 function updateDrawdown() {

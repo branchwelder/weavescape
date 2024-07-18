@@ -9,7 +9,7 @@ const worker = new Worker(new URL("./yarnWorker.js", import.meta.url), {
 const yarnDiameter = 1;
 const yarnRadius = yarnDiameter / 2;
 
-const spacingFactor = 1;
+const spacingFactor = 1.3;
 const nodeSpacing = yarnDiameter * spacingFactor;
 
 function initializeGrid(width, height) {
@@ -82,6 +82,7 @@ export function initializeSim(simCanvas, draft) {
     let [r, g, b] = hexToRgb(hex);
     return [r / 255, g / 255, b / 255];
   });
+  const yarnDiameter = parseFloat(document.getElementById('input-yarn-diameter').value);
 
   const { drawdown, warpColorSequence: warp, weftColorSequence: weft } = draft;
 
