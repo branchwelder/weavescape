@@ -61,8 +61,11 @@ function view() {
           <div></div>
           <div id="drawdown-container" class="scroller">
             <div class="spacer"></div>
-            <canvas id="drawdown-repeat"></canvas>
+            <div id="drawdown-repeat-container">
+              <canvas id="drawdown-repeat"></canvas>
+            </div>
             <canvas id="drawdown"></canvas>
+            <canvas id="drawdown-overlay"></canvas>
           </div>
           <div id="treadling-container" class="scroller">
             <canvas id="treadling" @click=${editTreadling} @mousemove=${(e) => highlightDraft(e, 'treadling')} @mouseleave=${resetHighlight}></canvas>
@@ -465,6 +468,9 @@ function init() {
     sizes: [50, 50],
     minSize: 100,
     gutterSize: 8,
+    onDrag: () => {
+      drawDrawdown(document.getElementById("drawdown"), GLOBAL_STATE.draft, GLOBAL_STATE.cellSize);
+    }
   });
 
   updateDrawdown();
