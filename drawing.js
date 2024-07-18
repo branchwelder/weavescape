@@ -1,4 +1,5 @@
 import { GLOBAL_STATE } from "./state";
+import { hexToRgb } from "./utils";
 
 function getWarpColor(draft, x) {
   const yarnIndex = draft.warpColorSequence[x % draft.warpColorSequence.length];
@@ -96,27 +97,68 @@ export function drawWeft(canvas, draft, cellSize) {
   drawGrid(ctx, cellSize, 1, height);
 }
 
+function getWarpYarn(draft, x) {
+  return draft.warpColorSequence[x % draft.warpColorSequence.length];
+}
+
+function getWeftYarn(draft, y) {
+  return draft.weftColorSequence[y % draft.weftColorSequence.length];
+}
+
 export function drawDrawdown(canvas, draft, cellSize) {
   const ctx = canvas.getContext("2d");
 
   const width = draft.threading[0].length;
   const height = draft.treadling.length;
 
-  canvas.height = height * cellSize;
-  canvas.width = width * cellSize;
+  canvas.height = height;
+  canvas.width = width;
 
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      let cell = draft.drawdown[y][x];
-      if (cell === 0) {
-        ctx.fillStyle = getWarpColor(draft, x);
-      } else {
-        ctx.fillStyle = getWeftColor(draft, y);
-      }
+  canvas.style.width = `${cellSize * width}px`;
+  canvas.style.height = `${cellSize * height}px`;
 
-      ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+  // for (let y = 0; y < height; y++) {
+  //   for (let x = 0; x < width; x++) {
+  //     let cell = draft.drawdown[y][x];
+  //     if (cell === 0) {
+  //       ctx.fillStyle = getWarpColor(draft, x);
+  //     } else {
+  //       ctx.fillStyle = getWeftColor(draft, y);
+  //     }
+
+  //     ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+  //   }
+  // }
+
+  const yarnPalette = GLOBAL_STATE.yarnPalette.map((hex) => hexToRgb(hex));
+
+  const imageData = ctx.getImageData(0, 0, width, height);
+
+  const data = imageData.data;
+
+  for (var y = 0; y < height; ++y) {
+    for (var x = 0; x < width; ++x) {
+      let yarnIndex =
+        draft.drawdown[y][x] === 0
+          ? getWarpYarn(draft, x)
+          : getWeftYarn(draft, y);
+
+      let rgb = yarnPalette[yarnIndex];
+
+      let i = (y * width + x) * 4;
+
+      data[i] = rgb[0]; // red
+      data[i + 1] = rgb[1]; // green
+      data[i + 2] = rgb[2]; // blue
+      data[i + 3] = 255;
     }
   }
 
-  drawGrid(ctx, cellSize, width, height);
+  // ctx.scale(cellSize, cellSize);
+
+  ctx.putImageData(imageData, 0, 0);
+
+  // ctx.putImageData(imageData, 0, 0);
+
+  // drawGrid(ctx, cellSize, width, height);
 }

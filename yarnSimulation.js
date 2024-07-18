@@ -1,5 +1,10 @@
 import { GLOBAL_STATE } from "./state";
 import { yarnRenderer } from "./yarnRenderer";
+import { hexToRgb } from "./utils";
+
+const worker = new Worker(new URL("./yarnWorker.js", import.meta.url), {
+  type: "module",
+});
 
 const yarnDiameter = 1;
 const yarnRadius = yarnDiameter / 2;
@@ -72,21 +77,11 @@ function weftPath(row, drawDown, nodes) {
   return path;
 }
 
-function hexToRgb(hex) {
-  hex = hex.length > 7 ? hex.slice(0, 7) : hex;
-  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result
-    ? [
-        parseInt(result[1], 16) / 255,
-        parseInt(result[2], 16) / 255,
-        parseInt(result[3], 16) / 255,
-      ]
-    : [0, 0, 0];
-  draft;
-}
-
 export function initializeSim(simCanvas, draft) {
-  const yarnPalette = GLOBAL_STATE.yarnPalette.map((hex) => hexToRgb(hex));
+  const yarnPalette = GLOBAL_STATE.yarnPalette.map((hex) => {
+    let [r, g, b] = hexToRgb(hex);
+    return [r / 255, g / 255, b / 255];
+  });
 
   const { drawdown, warpColorSequence: warp, weftColorSequence: weft } = draft;
 
