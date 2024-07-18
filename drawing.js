@@ -155,12 +155,20 @@ export function drawDrawdown(canvas, draft, cellSize) {
   ctxRepeat.fillStyle = pat;
   ctxRepeat.fill();
 
-  document.getElementById("drawdown-repeat-container").style.width = Math.max(tile[0], Math.floor(container.offsetWidth / cellSize) * cellSize) + 'px';
-  document.getElementById("drawdown-repeat-container").style.height = Math.max(tile[1], Math.floor(container.offsetHeight / cellSize) * cellSize) + 'px';
+  const containerRepeat = document.getElementById("drawdown-repeat-container");
+  const containerRepeatSize = [Math.max(tile[0], Math.floor(container.offsetWidth / cellSize) * cellSize),Math.max(tile[1], Math.floor(container.offsetHeight / cellSize) * cellSize)]
+  containerRepeat.style.width = containerRepeatSize[0] + 'px';
+  containerRepeat.style.height = containerRepeatSize[1] + 'px';
 
   const overlay = document.getElementById("drawdown-overlay");
   const ctx3 = overlay.getContext("2d");
   overlay.width = canvas.width;
   overlay.height = canvas.height;
+
+  // adjust to position to sync with scrolling
+  overlay.style.right = containerRepeatSize[0] === tile[0] ? "auto" : 0;
+  containerRepeat.style.right = containerRepeatSize[0] === tile[0] ? "auto" : 0;
+  canvasRepeat.style.right = containerRepeatSize[0] === tile[0] ? "auto" : 0;
+
   drawGrid(ctx3, cellSize, canvas.width,  canvas.height);
 }
