@@ -2,9 +2,7 @@ import { GLOBAL_STATE } from "./state";
 import { yarnRenderer } from "./yarnRenderer";
 import { hexToRgb } from "./utils";
 
-const worker = new Worker(new URL("./yarnWorker.js", import.meta.url), {
-  type: "module",
-});
+export let staleDrawdown = false;
 
 const yarnDiameter = 1;
 const yarnRadius = yarnDiameter / 2;
@@ -82,7 +80,9 @@ export function initializeSim(simCanvas, draft) {
     let [r, g, b] = hexToRgb(hex);
     return [r / 255, g / 255, b / 255];
   });
-  const yarnDiameter = parseFloat(document.getElementById('input-yarn-diameter').value);
+  const yarnDiameter = parseFloat(
+    document.getElementById("input-yarn-diameter").value
+  );
 
   const { drawdown, warpColorSequence: warp, weftColorSequence: weft } = draft;
 

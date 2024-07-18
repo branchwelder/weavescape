@@ -1,9 +1,15 @@
 import { html, render } from "lit-html";
 import Split from "split.js";
-import { drawBitmap, drawDrawdown, drawWarp, drawWeft } from "./drawing";
+import {
+  drawDrawdown,
+  drawThreading,
+  drawTreadling,
+  drawAll,
+  drawTieUp,
+} from "./drawing";
 import { initializeSim } from "./yarnSimulation";
 import patterns from "./patterns.json";
-import { GLOBAL_STATE, dispatch } from "./state";
+import { GLOBAL_STATE } from "./state";
 import { yarnPicker } from "./yarnPicker";
 
 function view() {
@@ -17,7 +23,8 @@ function view() {
               id="select-preset-pattern"
               @change=${(e) => setDraft(patterns[e.target.value])}>
               ${patterns.map(
-                (draft, i) => html`<option value=${i}>${draft.name || i + 1}</option>`
+                (draft, i) =>
+                  html`<option value=${i}>${draft.name || i + 1}</option>`
               )}
             </select>
 
@@ -40,23 +47,42 @@ function view() {
               .value=${String(GLOBAL_STATE.draft.treadling.length)}
               @change=${(e) => updateWeftThreads(e.target.value)} />
             <label> Yarn Diameter </label>
-            <input id="input-yarn-diameter" type="range" min="0.1" max="1.3" step="0.01" value="1" @change=${() => initializeSim(document.getElementById("sim-canvas"), GLOBAL_STATE.draft)} />
+            <input
+              id="input-yarn-diameter"
+              type="range"
+              min="0.1"
+              max="1.3"
+              step="0.01"
+              value="1"
+              @change=${() =>
+                initializeSim(
+                  document.getElementById("sim-canvas"),
+                  GLOBAL_STATE.draft
+                )} />
           </div>
           ${yarnPicker()}
         </div>
         <div class="draft-layout">
           <div id="warp-color-container" class="scroller">
             <div class="spacer"></div>
-            <canvas id="warp-color"></canvas>
+            <canvas id="warp-color" @click=${(e) => editWarp(e)}></canvas>
           </div>
           <div></div>
           <div></div>
           <div id="threading-container" class="scroller">
             <div class="spacer"></div>
-            <canvas id="threading" @click=${editThreading} @mousemove=${(e) => handleHoverCell(e, 'threading')} @mouseleave=${resetHighlight}></canvas>
+            <canvas
+              id="threading"
+              @click=${editThreading}
+              @mousemove=${(e) => handleHoverCell(e, "threading")}
+              @mouseleave=${resetHighlight}></canvas>
           </div>
           <div id="tie-up-container">
-            <canvas id="tie-up" @click=${editTieup} @mousemove=${(e) => handleHoverCell(e, 'tie-up')} @mouseleave=${resetHighlight}></canvas>
+            <canvas
+              id="tie-up"
+              @click=${editTieup}
+              @mousemove=${(e) => handleHoverCell(e, "tie-up")}
+              @mouseleave=${resetHighlight}></canvas>
           </div>
           <div></div>
           <div id="drawdown-container" class="scroller">
@@ -65,10 +91,14 @@ function view() {
             <canvas id="drawdown"></canvas>
           </div>
           <div id="treadling-container" class="scroller">
-            <canvas id="treadling" @click=${editTreadling} @mousemove=${(e) => highlightDraft(e, 'treadling')} @mouseleave=${resetHighlight}></canvas>
+            <canvas
+              id="treadling"
+              @click=${editTreadling}
+              @mousemove=${(e) => highlightDraft(e, "treadling")}
+              @mouseleave=${resetHighlight}></canvas>
           </div>
           <div id="weft-color-container" class="scroller">
-            <canvas id="weft-color"></canvas>
+            <canvas id="weft-color" @click=${(e) => editWeft(e)}></canvas>
           </div>
         </div>
       </div>
@@ -76,6 +106,26 @@ function view() {
         <canvas id="sim-canvas"></canvas>
       </div>
     </div>`;
+}
+
+function editWarp(e) {
+  const { row, col } = getCell(e);
+  const { draft, activeYarn } = GLOBAL_STATE;
+
+  draft.warpColorSequence[col] = activeYarn;
+
+  updateDrawdown();
+  drawAll();
+}
+
+function editWeft(e) {
+  const { row, col } = getCell(e);
+  const { draft, activeYarn } = GLOBAL_STATE;
+
+  draft.weftColorSequence[row] = activeYarn;
+
+  updateDrawdown();
+  drawAll();
 }
 
 function getTieUpColumn(draft, colIndex) {
@@ -232,7 +282,7 @@ function editTreadling(e) {
   updateDrawdown();
   drawTreadling();
 
-  highlightDraft(e, 'treadling')
+  highlightDraft(e, "treadling");
 }
 
 function editTieup(e) {
@@ -261,19 +311,19 @@ function highlightDraft(e, type) {
   const treadling = document.getElementById("treadling");
   const ctx3 = treadling.getContext("2d");
 
-  handleHoverCell(e, type)
+  handleHoverCell(e, type);
 
   ctx.lineWidth = 2;
   ctx.strokeStyle = "hsla(317, 82%, 74%, 0.8)";
-  ctx.fillStyle = 'rgba(50,50,50,0.7)'
+  ctx.fillStyle = "rgba(50,50,50,0.7)";
   ctx2.lineWidth = 2;
   ctx2.strokeStyle = "hsla(317, 82%, 74%, 0.8)";
-  ctx2.fillStyle = 'rgba(50,50,50,0.7)'
+  ctx2.fillStyle = "rgba(50,50,50,0.7)";
   ctx3.lineWidth = 2;
   ctx3.strokeStyle = "hsla(317, 82%, 74%, 0.8)";
-  ctx3.fillStyle = 'rgba(50,50,50,0.7)'
-  
-  const treadlingRow = draft.treadling[row]
+  ctx3.fillStyle = "rgba(50,50,50,0.7)";
+
+  const treadlingRow = draft.treadling[row];
   let highlightThreadingRows = new Array(draft.threading.length).fill(0);
 
   treadlingRow.forEach((cell, i) => {
@@ -285,27 +335,47 @@ function highlightDraft(e, type) {
         if (cell === 1) {
           highlightThreadingRows[j] = 1;
         }
-      })
+      });
     } else {
       ctx.fillRect(i * cellSize, 0, cellSize, tieUpCol.length * cellSize);
     }
-  })
+  });
 
   highlightThreadingRows.forEach((cell, i) => {
     if (cell === 1) {
-      ctx2.strokeRect(0, i * cellSize, draft.threading[0].length * cellSize, cellSize);
+      ctx2.strokeRect(
+        0,
+        i * cellSize,
+        draft.threading[0].length * cellSize,
+        cellSize
+      );
     } else {
-      ctx2.fillRect(0, i * cellSize, draft.threading[0].length * cellSize, cellSize);
+      ctx2.fillRect(
+        0,
+        i * cellSize,
+        draft.threading[0].length * cellSize,
+        cellSize
+      );
     }
-  })
+  });
 
   draft.treadling.forEach((_, i) => {
     if (i === row) {
-      ctx3.strokeRect(0, i * cellSize, draft.treadling[0].length * cellSize, cellSize);
+      ctx3.strokeRect(
+        0,
+        i * cellSize,
+        draft.treadling[0].length * cellSize,
+        cellSize
+      );
     } else {
-      ctx3.fillRect(0, i * cellSize, draft.treadling[0].length * cellSize, cellSize);
+      ctx3.fillRect(
+        0,
+        i * cellSize,
+        draft.treadling[0].length * cellSize,
+        cellSize
+      );
     }
-  })
+  });
 }
 
 function resetHighlight() {
@@ -316,7 +386,7 @@ function resetHighlight() {
 
 function handleHoverCell(e, id) {
   const { row, col } = getCell(e);
-  const { cellSize } = GLOBAL_STATE; 
+  const { cellSize } = GLOBAL_STATE;
   const canvas = document.getElementById(id);
   const ctx = canvas.getContext("2d");
 
@@ -324,7 +394,7 @@ function handleHoverCell(e, id) {
   drawThreading();
   drawTreadling();
 
-  ctx.fillStyle = 'hsla(317, 82%, 74%, 0.448)'
+  ctx.fillStyle = "hsla(317, 82%, 74%, 0.448)";
   ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
 }
 
@@ -335,50 +405,19 @@ function updateDrawdown() {
 
   drawDrawdown(drawdown, draft, cellSize);
 
-  initializeSim(document.getElementById("sim-canvas"), draft);
-}
-
-function drawThreading() {
-  const { cellSize, draft } = GLOBAL_STATE;
-
-  const threading = document.getElementById("threading");
-  drawBitmap(threading, draft.threading, cellSize);
-}
-
-function drawTreadling() {
-  const { cellSize, draft } = GLOBAL_STATE;
-
-  const treadling = document.getElementById("treadling");
-  drawBitmap(treadling, draft.treadling, cellSize);
-}
-
-function drawTieUp() {
-  const { cellSize, draft } = GLOBAL_STATE;
-
-  const tieUp = document.getElementById("tie-up");
-  drawBitmap(tieUp, draft.tieUp, cellSize);
-}
-
-function drawAll() {
-  const { cellSize, draft } = GLOBAL_STATE;
-  drawThreading();
-  drawTreadling();
-  drawTieUp();
-
-  const warpColor = document.getElementById("warp-color");
-  const weftColor = document.getElementById("weft-color");
-
-  drawWarp(warpColor, draft, cellSize);
-  drawWeft(weftColor, draft, cellSize);
-
-  const drawdown = document.getElementById("drawdown");
-
-  drawDrawdown(drawdown, draft, cellSize);
+  GLOBAL_STATE.staleDrawdown = true;
 }
 
 function r() {
   render(view(), document.body);
   window.requestAnimationFrame(r);
+
+  if (GLOBAL_STATE.staleDrawdown) {
+    window.setTimeout(() => {
+      initializeSim(document.getElementById("sim-canvas"), GLOBAL_STATE.draft);
+      GLOBAL_STATE.staleDrawdown = false;
+    });
+  }
 }
 
 function addScrollSync() {

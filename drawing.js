@@ -1,5 +1,4 @@
 import { GLOBAL_STATE } from "./state";
-import { hexToRgb } from "./utils";
 
 function getWarpColor(draft, x) {
   const yarnIndex = draft.warpColorSequence[x % draft.warpColorSequence.length];
@@ -116,35 +115,67 @@ export function drawDrawdown(canvas, draft, cellSize) {
 
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
-
       let yarnIndex =
-      draft.drawdown[y][x] === 0
-        ? getWarpYarn(draft, x)
-        : getWeftYarn(draft, y);
+        draft.drawdown[y][x] === 0
+          ? getWarpYarn(draft, x)
+          : getWeftYarn(draft, y);
 
-        ctx.fillStyle =GLOBAL_STATE.yarnPalette[yarnIndex];
-
+      ctx.fillStyle = GLOBAL_STATE.yarnPalette[yarnIndex];
 
       ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
     }
   }
-
-  // ctx.scale(cellSize, cellSize);
-
-  // ctx.putImageData(imageData, 0, 0);
-
-  // ctx.putImageData(imageData, 0, 0);
-
-  // drawGrid(ctx, cellSize, width, height);
 
   const canvasRepeat = document.getElementById("drawdown-repeat");
   const container = document.getElementById("drawdown-container");
   const ctx2 = canvasRepeat.getContext("2d");
   const img = document.getElementById("drawdown");
   const pat = ctx2.createPattern(img, "repeat");
-  canvasRepeat.width = Math.ceil(container.offsetWidth / canvas.width) * canvas.width;
-  canvasRepeat.height = Math.ceil(container.offsetHeight / canvas.height) * canvas.height;
+  canvasRepeat.width =
+    Math.ceil(container.offsetWidth / canvas.width) * canvas.width;
+  canvasRepeat.height =
+    Math.ceil(container.offsetHeight / canvas.height) * canvas.height;
   ctx2.rect(0, 0, canvasRepeat.width, canvasRepeat.height);
   ctx2.fillStyle = pat;
   ctx2.fill();
+}
+
+export function drawThreading() {
+  const { cellSize, draft } = GLOBAL_STATE;
+
+  const threading = document.getElementById("threading");
+  drawBitmap(threading, draft.threading, cellSize);
+}
+
+export function drawTreadling() {
+  const { cellSize, draft } = GLOBAL_STATE;
+
+  const treadling = document.getElementById("treadling");
+  drawBitmap(treadling, draft.treadling, cellSize);
+}
+
+export function drawTieUp() {
+  const { cellSize, draft } = GLOBAL_STATE;
+
+  const tieUp = document.getElementById("tie-up");
+  drawBitmap(tieUp, draft.tieUp, cellSize);
+}
+
+export function drawAll() {
+  const { cellSize, draft } = GLOBAL_STATE;
+  drawThreading();
+  drawTreadling();
+  drawTieUp();
+
+  const warpColor = document.getElementById("warp-color");
+  const weftColor = document.getElementById("weft-color");
+
+  drawWarp(warpColor, draft, cellSize);
+  drawWeft(weftColor, draft, cellSize);
+
+  const drawdown = document.getElementById("drawdown");
+
+  drawDrawdown(drawdown, draft, cellSize);
+
+  GLOBAL_STATE.staleDrawdown = true;
 }

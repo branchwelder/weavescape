@@ -11,7 +11,8 @@ let GLOBAL_STATE = {
   cellSize: 20,
   activeYarn: 0,
   yarnPalette: ["#d31b1b", "#3374a9", "#d69d21", "#56c246"],
-
+  staleDrawdown: false,
+  editingPalette: false,
   draft: {
     warpColorSequence: [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1],
     weftColorSequence: [2, 2, 3, 3],
