@@ -17,7 +17,7 @@ function view() {
               id="select-preset-pattern"
               @change=${(e) => setDraft(patterns[e.target.value])}>
               ${patterns.map(
-                (draft, i) => html`<option value=${i}>${i + 1}</option>`
+                (draft, i) => html`<option value=${i}>${draft.name || i + 1}</option>`
               )}
             </select>
 
@@ -40,7 +40,7 @@ function view() {
               .value=${String(GLOBAL_STATE.draft.treadling.length)}
               @change=${(e) => updateWeftThreads(e.target.value)} />
             <label> Yarn Diameter </label>
-            <input id="input-yarn-diameter" type="range" min="0.1" max="1" step="0.01" value="0.5" @change=${() => initializeSim(document.getElementById("sim-canvas"), GLOBAL_STATE.draft)} />
+            <input id="input-yarn-diameter" type="range" min="0.1" max="1.3" step="0.01" value="1" @change=${() => initializeSim(document.getElementById("sim-canvas"), GLOBAL_STATE.draft)} />
           </div>
           ${yarnPicker()}
         </div>
@@ -53,10 +53,10 @@ function view() {
           <div></div>
           <div id="threading-container" class="scroller">
             <div class="spacer"></div>
-            <canvas id="threading" @click=${editThreading}></canvas>
+            <canvas id="threading" @click=${editThreading} @mousemove=${(e) => handleHoverCell(e, 'threading')} @mouseleave=${resetHighlight}></canvas>
           </div>
           <div id="tie-up-container">
-            <canvas id="tie-up" @click=${editTieup}></canvas>
+            <canvas id="tie-up" @click=${editTieup} @mousemove=${(e) => handleHoverCell(e, 'tie-up')} @mouseleave=${resetHighlight}></canvas>
           </div>
           <div></div>
           <div id="drawdown-container" class="scroller">
@@ -260,18 +260,16 @@ function highlightDraft(e, type) {
   const treadling = document.getElementById("treadling");
   const ctx3 = treadling.getContext("2d");
 
-  drawTieUp();
-  drawThreading();
-  drawTreadling();
+  handleHoverCell(e, type)
 
   ctx.lineWidth = 2;
-  ctx.strokeStyle = "magenta";
+  ctx.strokeStyle = "hsla(317, 82%, 74%, 0.8)";
   ctx.fillStyle = 'rgba(50,50,50,0.7)'
   ctx2.lineWidth = 2;
-  ctx2.strokeStyle = "magenta";
+  ctx2.strokeStyle = "hsla(317, 82%, 74%, 0.8)";
   ctx2.fillStyle = 'rgba(50,50,50,0.7)'
   ctx3.lineWidth = 2;
-  ctx3.strokeStyle = "magenta";
+  ctx3.strokeStyle = "hsla(317, 82%, 74%, 0.8)";
   ctx3.fillStyle = 'rgba(50,50,50,0.7)'
   
   const treadlingRow = draft.treadling[row]
@@ -313,6 +311,23 @@ function resetHighlight() {
   drawTieUp();
   drawThreading();
   drawTreadling();
+}
+
+function handleHoverCell(e, id) {
+  const { row, col } = getCell(e);
+  const { cellSize } = GLOBAL_STATE; 
+  const canvas = document.getElementById(id);
+  const ctx = canvas.getContext("2d");
+
+  console.log(row, col)
+
+  drawTieUp();
+  drawThreading();
+  drawTreadling();
+
+  // draw hover box
+  ctx.fillStyle = 'hsla(317, 82%, 74%, 0.448)'
+  ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
 }
 
 function updateDrawdown() {
