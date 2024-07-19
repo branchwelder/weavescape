@@ -411,7 +411,7 @@ function init(yarnData, canvas) {
   let bbox = bbox3d(yarnData[0].pts);
 
   if (!camera) {
-    camera = new Camera(gl, { fov: 60, far: 100, near: 0.1 });
+    camera = new Camera(gl, { fov: 60, far: 300, near: 0.1 });
     camera.position.set(bbox.center[0], bbox.center[1], 15);
 
     controls = new Orbit(camera, {
@@ -423,17 +423,17 @@ function init(yarnData, canvas) {
 
   scene = new Transform();
 
-  light = new Camera(gl, {
-    left: -bbox.dimensions[0],
-    right: bbox.dimensions[0],
-    bottom: -bbox.dimensions[1],
-    top: bbox.dimensions[1],
-    far: 100,
-    near: 0.1,
-  });
+  // light = new Camera(gl, {
+  //   left: -bbox.dimensions[0],
+  //   right: bbox.dimensions[0],
+  //   bottom: -bbox.dimensions[1],
+  //   top: bbox.dimensions[1],
+  //   far: 100,
+  //   near: 0.1,
+  // });
 
-  light.position.set(bbox.xMin, bbox.yMax, 25);
-  light.lookAt(bbox.center);
+  // light.position.set(bbox.xMin, bbox.yMax, 25);
+  // light.lookAt(bbox.center);
   // shadow = new Shadow(gl, { light });
   // shadow.setSize({ width: 2048 });
 
@@ -479,25 +479,25 @@ function init(yarnData, canvas) {
       },
     });
 
-    const segmentDepthProgram = new Program(gl, {
-      vertex: segmentDepthVertex,
-      fragment: depthFragment,
-      cullFace: false,
-      uniforms: {
-        uWidth: { value: yarn.diameter },
-        uInverseModelViewMatrix: { value: null },
-      },
-    });
+    // const segmentDepthProgram = new Program(gl, {
+    //   vertex: segmentDepthVertex,
+    //   fragment: depthFragment,
+    //   cullFace: false,
+    //   uniforms: {
+    //     uWidth: { value: yarn.diameter },
+    //     uInverseModelViewMatrix: { value: null },
+    //   },
+    // });
 
-    const joinDepthProgram = new Program(gl, {
-      vertex: joinDepthVertex,
-      fragment: depthFragment,
-      cullFace: false,
-      uniforms: {
-        uWidth: { value: yarn.diameter },
-        uInverseModelViewMatrix: { value: null },
-      },
-    });
+    // const joinDepthProgram = new Program(gl, {
+    //   vertex: joinDepthVertex,
+    //   fragment: depthFragment,
+    //   cullFace: false,
+    //   uniforms: {
+    //     uWidth: { value: yarn.diameter },
+    //     uInverseModelViewMatrix: { value: null },
+    //   },
+    // });
 
     const mesh = new Mesh(gl, {
       mode: gl.TRIANGLE_STRIP,
@@ -519,8 +519,8 @@ function init(yarnData, canvas) {
     mesh.onBeforeRender(computeInverseModelViewUniform);
     joinMesh.onBeforeRender(computeInverseModelViewUniform);
 
-    mesh.depthProgram = segmentDepthProgram;
-    joinMesh.depthProgram = joinDepthProgram;
+    // mesh.depthProgram = segmentDepthProgram;
+    // joinMesh.depthProgram = joinDepthProgram;
 
     // shadow.add({ mesh: mesh });
     // shadow.add({ mesh: joinMesh });
