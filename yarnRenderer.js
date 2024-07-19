@@ -41,7 +41,6 @@ uniform float uWidth;
 varying float across;
 //varying vec4 vLightNDC;
 
-
 // Matrix to shift range from -1->1 to 0->1
 const mat4 depthScaleMatrix = mat4(
     0.5, 0, 0, 0,
@@ -69,6 +68,7 @@ void main() {
   vec4 undo = uInverseModelViewMatrix * mvPosition;
 
   across = position.y;
+
 
   // Calculate the NDC (normalized device coords) for the light to compare against shadowmap
   //vLightNDC = depthScaleMatrix * shadowProjectionMatrix * shadowViewMatrix * modelMatrix * undo;
@@ -99,7 +99,7 @@ void main() {
     //float occluder = unpackRGBA(texture2D(tShadow, lightPos.xy));
    // float shadow = mix(0.6, 1.0, step(depth, occluder));
 
-    vec3 highlight = normalize(vec3(0.0, across*2., 0.4));
+    vec3 highlight = normalize(vec3(0.0, across*2., 0.35));
     float outline = dot(normal, highlight);
     outline = step(0.4, outline);
 
@@ -443,7 +443,7 @@ function init(yarnData, canvas) {
   yarnData.forEach((yarn) => {
     if (yarn.pts.length < 6) return;
 
-    const splinePts = new Float32Array(buildYarnCurve(yarn.pts, 8, 0));
+    const splinePts = new Float32Array(buildYarnCurve(yarn.pts, 5, 0));
 
     yarnPoints.push(splinePts);
 
@@ -532,7 +532,7 @@ function init(yarnData, canvas) {
 
 function updateYarnGeometry(yarnData) {
   yarnData.forEach((yarn, yarnIndex) => {
-    const splinePts = buildYarnCurve(yarn.pts, 12);
+    const splinePts = buildYarnCurve(yarn.pts, 4);
 
     // Update the points in the yarn's point array
     splinePts.forEach((p, i) => (yarnPoints[yarnIndex][i] = p));

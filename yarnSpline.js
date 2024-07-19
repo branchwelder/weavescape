@@ -61,7 +61,7 @@ function pointInSegment(seg, t) {
     .add(seg.d.clone());
 }
 
-export function buildYarnCurve(pts, divisions = 5, tension = 0.5) {
+export function buildYarnCurve(pts, divisions = 3, tension = 0.5) {
   let vec3arr = [];
 
   for (let i = 0; i < pts.length - 9; i += 3) {
