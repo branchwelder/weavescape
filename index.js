@@ -226,13 +226,6 @@ function setPresetDraft(draft) {
   draft.weftColorSequence = weftColorSequence;
   GLOBAL_STATE.draft = draft;
 
-  const { yarnPalette } = GLOBAL_STATE;
-  // console.log(yarnPalette.slice(0, Math.floor(yarnPalette.length / 2)));
-  GLOBAL_STATE.draft.warpColorSequence = draft.threading[0].map((d, i) => 0);
-  GLOBAL_STATE.draft.weftColorSequence = draft.treadling.map((d, i) =>
-    yarnPalette.length > 1 ? 1 : 0
-  );
-
   updateDrawdown();
   drawAll();
 }
