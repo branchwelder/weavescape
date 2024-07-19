@@ -6,6 +6,8 @@ import {
   drawTreadling,
   drawAll,
   drawTieUp,
+  drawGrid,
+  drawDrawdownOverlay,
 } from "./drawing";
 import { initializeSim } from "./yarnSimulation";
 import patterns from "./patterns.json";
@@ -200,16 +202,16 @@ function getCell(event) {
 }
 
 function setDraft(draft) {
+  const { yarnPalette } = GLOBAL_STATE;
   GLOBAL_STATE.draft = draft;
-  GLOBAL_STATE.yarnPalette = ["#d31b1b", "#3374a9", "#d69d21", "#56c246"];
+  console.log(yarnPalette.slice(0, Math.floor(yarnPalette.length/2)))
   GLOBAL_STATE.draft.warpColorSequence = draft.threading[0].map((d, i) =>
-    i < draft.threading[0].length / 2 ? 0 : 1
+    0
   );
   GLOBAL_STATE.draft.weftColorSequence = draft.treadling.map((d, i) =>
-    i < draft.treadling.length / 2 ? 2 : 3
+    yarnPalette.length > 1 ? 1 : 0
   );
 
-  // console.log(GLOBAL_STATE);
   updateDrawdown();
   drawAll();
 }
@@ -331,8 +333,11 @@ function highlightDraft(e, type) {
   const ctx2 = threading.getContext("2d");
   const treadling = document.getElementById("treadling");
   const ctx3 = treadling.getContext("2d");
+  const drawdownOverlay = document.getElementById("drawdown-overlay");
+  const ctx4 = drawdownOverlay.getContext("2d");
 
   handleHoverCell(e, type);
+  drawDrawdownOverlay();
 
   ctx.lineWidth = 2;
   ctx.strokeStyle = "hsla(317, 82%, 74%, 0.8)";
@@ -343,6 +348,9 @@ function highlightDraft(e, type) {
   ctx3.lineWidth = 2;
   ctx3.strokeStyle = "hsla(317, 82%, 74%, 0.8)";
   ctx3.fillStyle = "rgba(50,50,50,0.7)";
+  ctx4.lineWidth = 2;
+  ctx4.strokeStyle = "hsla(317, 82%, 74%, 0.8)";
+  ctx4.fillStyle = "rgba(0,0,0,0.4)";
 
   const treadlingRow = draft.treadling[row];
   let highlightThreadingRows = new Array(draft.threading.length).fill(0);
@@ -388,11 +396,23 @@ function highlightDraft(e, type) {
         draft.treadling[0].length * cellSize,
         cellSize
       );
+      ctx4.strokeRect(
+        0,
+        i * cellSize,
+        draft.threading[0].length * cellSize,
+        cellSize
+      );
     } else {
       ctx3.fillRect(
         0,
         i * cellSize,
         draft.treadling[0].length * cellSize,
+        cellSize
+      );
+      ctx4.fillRect(
+        0,
+        i * cellSize,
+        draft.threading[0].length * cellSize,
         cellSize
       );
     }
@@ -403,6 +423,7 @@ function resetHighlight() {
   drawTieUp();
   drawThreading();
   drawTreadling();
+  drawDrawdownOverlay();
 }
 
 function handleHoverCell(e, id) {

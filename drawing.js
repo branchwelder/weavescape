@@ -10,7 +10,10 @@ function getWeftColor(draft, x) {
   return GLOBAL_STATE.yarnPalette[yarnIndex];
 }
 
-function drawGrid(ctx, cellSize, width, height) {
+export function drawGrid(ctx, cellSize, width, height) {
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 1;
+  
   ctx.beginPath();
 
   for (let y = 0; y < height; y++) {
@@ -52,10 +55,7 @@ export function drawBitmap(canvas, arrayData, cellSize) {
       ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
     }
   }
-
-  ctx.lineStyle = "black";
-  ctx.lineWidth = 1;
-
+  
   drawGrid(ctx, cellSize, width, height);
 }
 
@@ -73,9 +73,6 @@ export function drawWarp(canvas, draft, cellSize) {
     ctx.fillRect(x * cellSize, 0, cellSize, cellSize);
   }
 
-  ctx.lineStyle = "black";
-  ctx.lineWidth = 1;
-
   drawGrid(ctx, cellSize, width, 1);
 }
 
@@ -92,9 +89,6 @@ export function drawWeft(canvas, draft, cellSize) {
 
     ctx.fillRect(0, y * cellSize, cellSize, cellSize);
   }
-
-  ctx.lineStyle = "black";
-  ctx.lineWidth = 1;
 
   drawGrid(ctx, cellSize, 1, height);
 }
@@ -153,7 +147,6 @@ export function drawDrawdown(canvas, draft, cellSize) {
   containerRepeat.style.height = containerRepeatSize[1] + 'px';
 
   const overlay = document.getElementById("drawdown-overlay");
-  const ctx3 = overlay.getContext("2d");
   overlay.width = canvas.width;
   overlay.height = canvas.height;
 
@@ -162,7 +155,14 @@ export function drawDrawdown(canvas, draft, cellSize) {
   containerRepeat.style.right = containerRepeatSize[0] === tile[0] ? "auto" : 0;
   canvasRepeat.style.right = containerRepeatSize[0] === tile[0] ? "auto" : 0;
 
-  drawGrid(ctx3, cellSize, canvas.width, canvas.height);
+  drawDrawdownOverlay();
+}
+
+export function drawDrawdownOverlay() {
+  const overlay = document.getElementById("drawdown-overlay");
+  const context = overlay.getContext("2d");
+  context.clearRect(0, 0, overlay.width, overlay.height); 
+  drawGrid(context, GLOBAL_STATE.cellSize, overlay.width, overlay.height);
 }
 
 export function drawThreading() {
