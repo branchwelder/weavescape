@@ -123,11 +123,15 @@ function view() {
 
 function zoomOut() {
   GLOBAL_STATE.cellSize = GLOBAL_STATE.cellSize - 1;
+  GLOBAL_STATE.refreshSim = true;
+
   drawAll();
 }
 
 function zoomIn() {
   GLOBAL_STATE.cellSize = GLOBAL_STATE.cellSize + 1;
+  GLOBAL_STATE.refreshSim = true;
+
   drawAll();
 }
 
@@ -204,10 +208,8 @@ function getCell(event) {
 function setDraft(draft) {
   const { yarnPalette } = GLOBAL_STATE;
   GLOBAL_STATE.draft = draft;
-  console.log(yarnPalette.slice(0, Math.floor(yarnPalette.length/2)))
-  GLOBAL_STATE.draft.warpColorSequence = draft.threading[0].map((d, i) =>
-    0
-  );
+  console.log(yarnPalette.slice(0, Math.floor(yarnPalette.length / 2)));
+  GLOBAL_STATE.draft.warpColorSequence = draft.threading[0].map((d, i) => 0);
   GLOBAL_STATE.draft.weftColorSequence = draft.treadling.map((d, i) =>
     yarnPalette.length > 1 ? 1 : 0
   );
@@ -447,17 +449,17 @@ function updateDrawdown() {
 
   drawDrawdown(drawdown, draft, cellSize);
 
-  GLOBAL_STATE.staleDrawdown = true;
+  GLOBAL_STATE.refreshSim = true;
 }
 
 function r() {
   render(view(), document.body);
   window.requestAnimationFrame(r);
 
-  if (GLOBAL_STATE.staleDrawdown) {
+  if (GLOBAL_STATE.refreshSim) {
     window.setTimeout(() => {
       initializeSim(document.getElementById("sim-canvas"), GLOBAL_STATE.draft);
-      GLOBAL_STATE.staleDrawdown = false;
+      GLOBAL_STATE.refreshSim = false;
     });
   }
 }

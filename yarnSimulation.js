@@ -75,7 +75,70 @@ function weftPath(row, drawDown, nodes) {
   return path;
 }
 
+function computeSwatchFit() {
+  const { cellSize } = GLOBAL_STATE;
+
+  const canvas = document.getElementById("drawdown");
+  const container = document.getElementById("drawdown-container");
+
+  const containerRepeatSize = [
+    Math.max(
+      canvas.width / cellSize,
+      Math.floor(container.offsetWidth / cellSize) - 1
+    ),
+    Math.max(
+      canvas.height / cellSize,
+      Math.floor(container.offsetHeight / cellSize) - 1
+    ),
+  ];
+
+  return containerRepeatSize;
+}
+
+function repeatArray(arr, length) {
+  let result = [];
+  let i = 0;
+
+  while (result.length < length) {
+    result.push(arr[i]);
+    i = (i + 1) % arr.length; // Loop back to the start of the array
+  }
+
+  return result;
+}
+
+function buildSwatchData() {
+  const { draft, cellSize } = GLOBAL_STATE;
+
+  const dims = computeSwatchFit();
+
+  const ddHeight = draft.drawdown.length;
+  const ddWidth = draft.drawdown[0].length;
+
+  let swatch = [];
+
+  for (let y = 0; y < dims[1]; y++) {
+    const row = Array(dims[0]);
+    for (let x = 0; x < dims[0]; x++) {
+      row[dims[0] - 1 - x] =
+        draft.drawdown[y % ddHeight][ddWidth - 1 - (x % ddWidth)];
+    }
+    swatch.push(row);
+  }
+
+  const warp = repeatArray(draft.warpColorSequence, dims[0]);
+
+  const weft = repeatArray(draft.weftColorSequence, dims[1]);
+
+  return { swatch, warp, weft };
+}
+
 export function initializeSim(simCanvas, draft) {
+  if (GLOBAL_STATE.stopSim) {
+    GLOBAL_STATE.stopSim();
+    GLOBAL_STATE.stopSim = null;
+  }
+
   const yarnPalette = GLOBAL_STATE.yarnPalette.map((hex) => {
     let [r, g, b] = hexToRgb(hex);
     return [r / 255, g / 255, b / 255];
@@ -84,12 +147,12 @@ export function initializeSim(simCanvas, draft) {
     document.getElementById("input-yarn-diameter").value
   );
 
-  const { drawdown, warpColorSequence: warp, weftColorSequence: weft } = draft;
+  const { swatch, warp, weft } = buildSwatchData(draft);
 
-  const nodes = initializeGrid(drawdown[0].length, drawdown.length);
+  const nodes = initializeGrid(swatch[0].length, swatch.length);
 
-  const warpYarns = warp.map((yarn, index) => warpPath(index, drawdown, nodes));
-  const weftYarns = weft.map((yarn, index) => weftPath(index, drawdown, nodes));
+  const warpYarns = warp.map((yarn, index) => warpPath(index, swatch, nodes));
+  const weftYarns = weft.map((yarn, index) => weftPath(index, swatch, nodes));
   const yarnData = [];
 
   warpYarns.forEach((pointArray, index) => {
@@ -114,10 +177,19 @@ export function initializeSim(simCanvas, draft) {
 
   yarnRenderer.init(yarnData, simCanvas);
 
+  let stopped = false;
+
   function r() {
+    if (stopped) return;
     yarnRenderer.draw();
     requestAnimationFrame(r);
   }
 
   r();
+
+  function stop() {
+    stopped = true;
+  }
+
+  GLOBAL_STATE.stopSim = stop;
 }

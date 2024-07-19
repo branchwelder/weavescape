@@ -27,11 +27,14 @@ function deleteColor(index) {
   draft.weftColorSequence = newWeft;
   draft.warpColorSequence = newWarp;
   GLOBAL_STATE.yarnPalette = newPalette;
+  GLOBAL_STATE.refreshSim = true;
   drawAll();
 }
 
 function editYarnColor(e, index) {
   GLOBAL_STATE.yarnPalette[index] = e.target.value;
+  GLOBAL_STATE.refreshSim = true;
+
   drawAll();
 }
 
@@ -41,6 +44,7 @@ function addRandomYarn() {
 
 function shufflePalette() {
   GLOBAL_STATE.yarnPalette = [...shuffle(GLOBAL_STATE.yarnPalette)];
+  GLOBAL_STATE.refreshSim = true;
 
   drawAll();
 }
@@ -50,6 +54,7 @@ function randomizePalette() {
     Array(GLOBAL_STATE.yarnPalette.length),
     () => getRandomColor()
   );
+  GLOBAL_STATE.refreshSim = true;
 
   drawAll();
 }
