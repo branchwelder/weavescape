@@ -591,6 +591,10 @@ function init() {
     },
   });
 
+  window.addEventListener("resize", () => {
+    updateDrawdown();
+  })
+
   updateDrawdown();
 
   drawAll();
