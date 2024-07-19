@@ -57,10 +57,10 @@ function view() {
               step="0.01"
               value="1"
               @change=${() =>
-                initializeSim(
-                  document.getElementById("sim-canvas"),
-                  GLOBAL_STATE.draft
-                )} />
+      initializeSim(
+        document.getElementById("sim-canvas"),
+        GLOBAL_STATE.draft
+      )} />
           </div>
           ${yarnPicker()}
           <div class="zoom-container">
@@ -88,6 +88,12 @@ function view() {
               @mouseleave=${resetHighlight}></canvas>
           </div>
           <div id="tie-up-container">
+            <div class="draft-numbers draft-numbers--harnesses" style="font-size: ${GLOBAL_STATE.cellSize * 0.6}px; flex-direction: column; height: 100%; position: absolute; top: 0; right: -2rem; width: 1.25rem;">
+              ${GLOBAL_STATE.draft.threading.map((row, i) => html`<div>${GLOBAL_STATE.draft.threading.length - i}</div>`)}
+            </div>
+            <div class="draft-numbers draft-numbers--treadles" style="font-size: ${GLOBAL_STATE.cellSize * 0.6}px; position: absolute; margin-bottom: 20px; top: -1.75em;">
+              ${GLOBAL_STATE.draft.treadling[0].map((col, i) => html`<div>${i + 1}</div>`)}
+            </div>
             <canvas
               id="tie-up"
               @click=${editTieup}
@@ -104,11 +110,16 @@ function view() {
             <canvas id="drawdown-overlay"></canvas>
           </div>
           <div id="treadling-container" class="scroller">
-            <canvas
-              id="treadling"
-              @click=${editTreadling}
-              @mousemove=${(e) => highlightDraft(e, "treadling")}
-              @mouseleave=${resetHighlight}></canvas>
+            <div>
+              <canvas
+                id="treadling"
+                @click=${editTreadling}
+                @mousemove=${(e) => highlightDraft(e, "treadling")}
+                @mouseleave=${resetHighlight}></canvas>
+              <button class="btn btn--increase" @click=${() => updateWeftThreads(GLOBAL_STATE.draft.treadling.length + 1)}>
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
           </div>
           <div id="weft-color-container" class="scroller">
             <canvas id="weft-color" @click=${(e) => editWeft(e)}></canvas>
@@ -369,9 +380,11 @@ function highlightDraft(e, type) {
   const treadlingRow = draft.treadling[row];
   let highlightThreadingRows = new Array(draft.threading.length).fill(0);
 
+  let highlightColIndices = [];
   treadlingRow.forEach((cell, i) => {
     const tieUpCol = getTieUpColumn(draft, i);
     if (cell === 1) {
+      highlightColIndices.push(i);
       ctx.strokeRect(i * cellSize, 0, cellSize, tieUpCol.length * cellSize);
 
       tieUpCol.forEach((cell, j) => {
@@ -384,8 +397,10 @@ function highlightDraft(e, type) {
     }
   });
 
+  let highlightRowIndices = [];
   highlightThreadingRows.forEach((cell, i) => {
     if (cell === 1) {
+      highlightRowIndices.push(i);
       ctx2.strokeRect(
         0,
         i * cellSize,
@@ -401,6 +416,14 @@ function highlightDraft(e, type) {
       );
     }
   });
+
+  document.querySelectorAll(".draft-numbers--harnesses div").forEach((el, i) => {
+    el.style.opacity = highlightRowIndices.includes(i) ? 1 : 0.1;
+  })
+
+  document.querySelectorAll(".draft-numbers--treadles div").forEach((el, i) => {
+    el.style.opacity = highlightColIndices.includes(i) ? 1 : 0.1;
+  })
 
   draft.treadling.forEach((_, i) => {
     if (i === row) {
@@ -438,6 +461,10 @@ function resetHighlight() {
   drawThreading();
   drawTreadling();
   drawDrawdownOverlay();
+
+  document.querySelectorAll(".draft-numbers div").forEach((el) => {
+    el.style.opacity = 1;
+  })
 }
 
 function handleHoverCell(e, id) {

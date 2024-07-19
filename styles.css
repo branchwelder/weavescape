@@ -12,6 +12,7 @@
   --toolbar: #464646;
   --text: #e5e5e5;
   --text-accent: #e5e5e5;
+  --cell-size: 20px;
 }
 
 * {
@@ -95,6 +96,10 @@ canvas {
   align-items: start;
 }
 
+#tie-up-container {
+  position: relative;
+}
+
 #treadling-container,
 #drawdown-container,
 #weft-color-container {
@@ -148,6 +153,34 @@ canvas {
 
 .draft-controls > div {
   display: block;
+}
+
+.draft-numbers {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  height: 1rem;
+}
+
+.btn--increase {
+  opacity: 0;
+  transition: all 200ms;
+  font-size: 0.875rem;
+  line-height: 1;
+  padding: 0.5rem;
+  /* background-color: var(--toolbar); */
+  color: var(--text);
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+.btn--increase:active {
+  box-shadow: none;
+}
+
+#treadling-container > div:hover .btn--increase {
+  opacity: 1;
 }
 
 select,
@@ -295,7 +328,7 @@ button.btn {
   background-color: transparent;
   font-family: inherit;
   padding: 0;
-  cursor: inherit;
+  cursor: pointer;
 }
 
 a.btn,
