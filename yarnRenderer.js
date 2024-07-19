@@ -7,13 +7,13 @@ import {
   Vec3,
   Geometry,
   Mesh,
-  Shadow,
+  // Shadow,
   Mat4,
 } from "ogl";
 
 import { buildYarnCurve } from "./yarnSpline";
 
-let gl, controls, renderer, camera, scene, light, shadow;
+let gl, controls, renderer, camera, scene, light; //, shadow;
 let yarnPoints = [];
 let yarnGeometry = [];
 let yarnColors = [];
@@ -32,14 +32,14 @@ uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 uInverseModelViewMatrix;
 
-uniform mat4 shadowViewMatrix;
-uniform mat4 shadowProjectionMatrix;
+//uniform mat4 shadowViewMatrix;
+//uniform mat4 shadowProjectionMatrix;
 
 
 uniform float uWidth;
 
 varying float across;
-varying vec4 vLightNDC;
+//varying vec4 vLightNDC;
 
 
 // Matrix to shift range from -1->1 to 0->1
@@ -71,7 +71,7 @@ void main() {
   across = position.y;
 
   // Calculate the NDC (normalized device coords) for the light to compare against shadowmap
-  vLightNDC = depthScaleMatrix * shadowProjectionMatrix * shadowViewMatrix * modelMatrix * undo;
+  //vLightNDC = depthScaleMatrix * shadowProjectionMatrix * shadowViewMatrix * modelMatrix * undo;
 }
 `;
 
@@ -80,10 +80,10 @@ precision highp float;
 
 uniform float uWidth;
 uniform vec3 uColor;
-uniform sampler2D tShadow;
+//uniform sampler2D tShadow;
 
 varying float across;
-varying vec4 vLightNDC;
+//varying vec4 vLightNDC;
 
 float unpackRGBA (vec4 v) {
     return dot(v, 1.0 / vec4(1.0, 255.0, 65025.0, 16581375.0));
@@ -93,18 +93,17 @@ vec3 normal = vec3(0.0, 0.0, 1.0);
 
 
 void main() {
-    vec3 lightPos = vLightNDC.xyz / vLightNDC.w;
-    float bias = 0.0001;
-    float depth = lightPos.z - bias;
-    float occluder = unpackRGBA(texture2D(tShadow, lightPos.xy));
-    // float shadow = mix(0.6, 1.0, smoothstep(depth-0.0005, depth+0.0005, occluder));
-    float shadow = mix(0.6, 1.0, step(depth, occluder));
+    //vec3 lightPos = vLightNDC.xyz / vLightNDC.w;
+    //float bias = 0.0001;
+   // float depth = lightPos.z - bias;
+    //float occluder = unpackRGBA(texture2D(tShadow, lightPos.xy));
+   // float shadow = mix(0.6, 1.0, step(depth, occluder));
 
     vec3 highlight = normalize(vec3(0.0, across*2., 0.4));
     float outline = dot(normal, highlight);
     outline = step(0.4, outline);
 
-    gl_FragColor.rgb = uColor * outline * shadow;
+    gl_FragColor.rgb = uColor * outline;// * shadow;
     gl_FragColor.a = 1.0;
 }
 `;
@@ -124,8 +123,8 @@ uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 uInverseModelViewMatrix;
 
-uniform mat4 shadowViewMatrix;
-uniform mat4 shadowProjectionMatrix;
+//uniform mat4 shadowViewMatrix;
+//uniform mat4 shadowProjectionMatrix;
 
 
 varying float across;
@@ -176,7 +175,7 @@ void main() {
 
   across = (position.x + position.y) * 0.5 * sigma;
     // Calculate the NDC (normalized device coords) for the light to compare against shadowmap
-  vLightNDC = depthScaleMatrix * shadowProjectionMatrix * shadowViewMatrix * modelMatrix * undo;
+  //vLightNDC = depthScaleMatrix * shadowProjectionMatrix * shadowViewMatrix * modelMatrix * undo;
 }
 `;
 
@@ -435,8 +434,8 @@ function init(yarnData, canvas) {
 
   light.position.set(bbox.xMin, bbox.yMax, 25);
   light.lookAt(bbox.center);
-  shadow = new Shadow(gl, { light });
-  shadow.setSize({ width: 2048 });
+  // shadow = new Shadow(gl, { light });
+  // shadow.setSize({ width: 2048 });
 
   yarnPoints = [];
   yarnGeometry = [];
@@ -523,8 +522,8 @@ function init(yarnData, canvas) {
     mesh.depthProgram = segmentDepthProgram;
     joinMesh.depthProgram = joinDepthProgram;
 
-    shadow.add({ mesh: mesh });
-    shadow.add({ mesh: joinMesh });
+    // shadow.add({ mesh: mesh });
+    // shadow.add({ mesh: joinMesh });
 
     mesh.setParent(scene);
     joinMesh.setParent(scene);
@@ -555,7 +554,7 @@ function draw() {
 
   controls.update();
 
-  shadow.render({ scene });
+  // shadow.render({ scene });
   renderer.render({ scene, camera });
 }
 
