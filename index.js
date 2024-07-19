@@ -6,7 +6,6 @@ import {
   drawTreadling,
   drawAll,
   drawTieUp,
-  drawGrid,
   drawDrawdownOverlay,
 } from "./drawing";
 import { initializeSim } from "./yarnSimulation";
@@ -588,12 +587,7 @@ function init() {
     minSize: 100,
     gutterSize: 8,
     onDrag: () => {
-      drawDrawdown(
-        document.getElementById("drawdown"),
-        GLOBAL_STATE.draft,
-        GLOBAL_STATE.cellSize
-      );
-      GLOBAL_STATE.refreshSim = true;
+      updateDrawdown();
     },
   });
 
