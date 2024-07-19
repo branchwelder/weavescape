@@ -87,10 +87,10 @@ function view() {
               @mouseleave=${resetHighlight}></canvas>
           </div>
           <div id="tie-up-container">
-            <div class="draft-numbers draft-numbers--harnesses" style="font-size: ${GLOBAL_STATE.cellSize * 0.6}px; flex-direction: column; height: 100%; position: absolute; top: 0; right: -2rem; width: 1.25rem;">
+            <div class="draft-numbers draft-numbers--harnesses" style="font-size: ${GLOBAL_STATE.cellSize * 0.6}px;">
               ${GLOBAL_STATE.draft.threading.map((row, i) => html`<div>${GLOBAL_STATE.draft.threading.length - i}</div>`)}
             </div>
-            <div class="draft-numbers draft-numbers--treadles" style="font-size: ${GLOBAL_STATE.cellSize * 0.6}px; position: absolute; margin-bottom: 20px; top: -1.75em;">
+            <div class="draft-numbers draft-numbers--treadles" style="font-size: ${GLOBAL_STATE.cellSize * 0.6}px;">
               ${GLOBAL_STATE.draft.treadling[0].map((col, i) => html`<div>${i + 1}</div>`)}
             </div>
             <canvas
