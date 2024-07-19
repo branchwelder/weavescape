@@ -23,7 +23,7 @@ function view() {
             <label for="select-preset-pattern"> Preset </label>
             <select
               id="select-preset-pattern"
-              @change=${(e) => setDraft(patterns[e.target.value])}>
+              @change=${(e) => setPresetDraft(patterns[e.target.value])}>
               ${patterns.map(
                 (draft, i) =>
                   html`<option value=${i}>${draft.name || i + 1}</option>`
@@ -205,10 +205,29 @@ function getCell(event) {
   return { row: y, col: x };
 }
 
-function setDraft(draft) {
-  const { yarnPalette } = GLOBAL_STATE;
+function setPresetDraft(draft) {
+  let { warpColorSequence, weftColorSequence } = GLOBAL_STATE.draft;
+
+  while (warpColorSequence.length > draft.threading[0].length) {
+    warpColorSequence.shift(warpColorSequence[0]);
+  }
+  while (warpColorSequence.length < draft.threading[0].length) {
+    warpColorSequence.unshift(warpColorSequence[0]);
+  }
+
+  while (weftColorSequence.length > draft.treadling.length) {
+    weftColorSequence.pop();
+  }
+  while (weftColorSequence.length < draft.treadling.length) {
+    weftColorSequence.push(weftColorSequence[weftColorSequence.length - 1]);
+  }
+
+  draft.warpColorSequence = warpColorSequence;
+  draft.weftColorSequence = weftColorSequence;
   GLOBAL_STATE.draft = draft;
-  console.log(yarnPalette.slice(0, Math.floor(yarnPalette.length / 2)));
+
+  const { yarnPalette } = GLOBAL_STATE;
+  // console.log(yarnPalette.slice(0, Math.floor(yarnPalette.length / 2)));
   GLOBAL_STATE.draft.warpColorSequence = draft.threading[0].map((d, i) => 0);
   GLOBAL_STATE.draft.weftColorSequence = draft.treadling.map((d, i) =>
     yarnPalette.length > 1 ? 1 : 0
