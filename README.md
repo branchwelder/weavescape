@@ -11,7 +11,8 @@ A design and simulation tool for weaving!
 
 ## To do
 
-- [ ] Yarn configuration
+- [ ] Center simulation on load
+- Yarn configuration
   - [ ] weight/radius
   - [ ] spring constant
   - [ ] material
@@ -19,3 +20,8 @@ A design and simulation tool for weaving!
 - [ ] PDF export
 - [ ] Mobile support
 - [ ] ? Better way of setting the swatch preview size
+- [ ] Weaving Information Format (WIF) support
+- [ ] Add bitmap previews to preset swatch library
+- editing
+  - [ ] Better color randomization for warp/weft color sequence
+  - [ ] Drag to paint colors in color sequences
