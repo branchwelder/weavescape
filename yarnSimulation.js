@@ -7,7 +7,7 @@ export let staleDrawdown = false;
 const yarnDiameter = 1;
 const yarnRadius = yarnDiameter / 2;
 
-const spacingFactor = 1.3;
+const spacingFactor = 1;
 const nodeSpacing = yarnDiameter * spacingFactor;
 
 function initializeGrid(width, height) {
@@ -126,7 +126,10 @@ function buildSwatchData() {
     swatch.push(row);
   }
 
-  const warp = repeatArray(draft.warpColorSequence, dims[0]);
+  const warp = repeatArray(
+    draft.warpColorSequence.toReversed(),
+    dims[0]
+  ).toReversed();
 
   const weft = repeatArray(draft.weftColorSequence, dims[1]);
 
