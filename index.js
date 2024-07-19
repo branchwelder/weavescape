@@ -593,6 +593,7 @@ function init() {
         GLOBAL_STATE.draft,
         GLOBAL_STATE.cellSize
       );
+      GLOBAL_STATE.refreshSim = true;
     },
   });
 
