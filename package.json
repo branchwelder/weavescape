@@ -1,15 +1,21 @@
 {
+  "name": "weavescape",
+  "main": "index.js",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "host": "vite --host",
     "build": "vite build",
-    "preview": "vite build && vite preview"
+    "preview": "vite build && vite preview",
+    "deploy": "vite build && gh-pages -d dist"
   },
   "dependencies": {
-    "@eastdesire/jscolor": "^2.5.2",
     "lit-html": "^3.1.4",
     "ogl": "^1.0.7",
     "split.js": "^1.6.5",
     "vite": "^5.3.4"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.1.1"
   }
 }
