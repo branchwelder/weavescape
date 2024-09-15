@@ -1,6 +1,7 @@
 import { GLOBAL_STATE } from "./state";
 import { yarnRenderer } from "./yarnRenderer";
 import { hexToRgb } from "./utils";
+import { toReversed } from 'array.prototype.toreversed';
 
 export let staleDrawdown = false;
 

@@ -10,6 +10,7 @@
     "deploy": "vite build && echo weavescape.net > ./dist/CNAME && gh-pages -d dist"
   },
   "dependencies": {
+    "array.prototype.toreversed": "^1.1.2",
     "lit-html": "^3.1.4",
     "ogl": "^1.0.7",
     "split.js": "^1.6.5",
